@@ -1,5 +1,6 @@
 import { BuyForm } from "@/components/BuyForm";
 import { SellForm } from "@/components/SellForm";
+import { ClaimForm } from "@/components/ClaimForm";
 import { ApproveForm } from "@/components/ApproveForm";
 import { PendingRewards } from "@/components/PendingRewards";
 import { DistributeForm } from "@/components/DistributeForm";
@@ -31,6 +32,12 @@ export default function Home() {
                 Your rewards: <PendingRewards /> $<RewardTokenSymbol />
             </div>
             <div>
+                <ClaimForm />
+            </div>
+            <div>
+                <DistributeForm />
+            </div>
+            <div>
                 <BuyForm />
             </div>
             <div>
@@ -38,9 +45,6 @@ export default function Home() {
             </div>
             <div>
                 <ApproveForm />
-            </div>
-            <div>
-                <DistributeForm />
             </div>
         </main >
     )

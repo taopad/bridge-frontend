@@ -3,17 +3,17 @@
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
 
-function useDistribute() {
+function useClaim() {
     const { config } = usePrepareContractWrite({
         ...NativeTokenContract,
-        "functionName": "distribute",
+        "functionName": "claim",
     })
 
     return useContractWrite(config)
 }
 
-export function DistributeForm() {
-    const { isLoading, write } = useDistribute()
+export function ClaimForm() {
+    const { isLoading, write } = useClaim()
 
     const disabled = !write || isLoading
 
@@ -25,7 +25,7 @@ export function DistributeForm() {
                 onClick={() => write?.()}
                 disabled={disabled}
             >
-                Distribute
+                Claim
             </button>
         </form>
     )
