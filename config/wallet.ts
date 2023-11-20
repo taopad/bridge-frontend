@@ -18,7 +18,7 @@ export const { chains, publicClient } = configureChains([chain], [
 ]);
 
 const { connectors } = getDefaultWallets({
-    appName: 'PeTAO app',
+    appName: 'Niera reward app',
     projectId,
     chains,
 });

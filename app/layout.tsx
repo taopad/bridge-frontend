@@ -7,8 +7,8 @@ import { WalletProvider } from '@/components/WalletProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'PeTAO App',
-    description: 'PeTAO App',
+    title: 'Niera reward App',
+    description: 'Niera reward App',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

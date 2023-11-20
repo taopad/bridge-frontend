@@ -1,6 +1,17 @@
 const abi = [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -148,6 +159,44 @@ const abi = [
       {
         "indexed": true,
         "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Claim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Distribute",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "previousOwner",
         "type": "address"
       },
@@ -190,11 +239,11 @@ const abi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "account",
+        "name": "addr",
         "type": "address"
       }
     ],
-    "name": "addExcludedFromTax",
+    "name": "addToBlacklist",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -268,7 +317,7 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "buyTaxLimit",
+    "name": "buyMarketingFee",
     "outputs": [
       {
         "internalType": "uint256",
@@ -281,7 +330,7 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "buyTaxStart",
+    "name": "buyRewardFee",
     "outputs": [
       {
         "internalType": "uint256",
@@ -294,7 +343,7 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "buyTaxWindow",
+    "name": "buyTotalFee",
     "outputs": [
       {
         "internalType": "uint256",
@@ -307,27 +356,27 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "claimReward",
+    "name": "claim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "createAmmPairWith",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "currentSellPressure",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "currentSellTax",
+    "name": "deadBlocks",
     "outputs": [
       {
         "internalType": "uint256",
@@ -353,20 +402,14 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "factory",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "distribute",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "getBuyTax",
+    "name": "feeDenominator",
     "outputs": [
       {
         "internalType": "uint256",
@@ -398,7 +441,7 @@ const abi = [
         "type": "address"
       }
     ],
-    "name": "isExcludedFromRewards",
+    "name": "isBlacklisted",
     "outputs": [
       {
         "internalType": "bool",
@@ -417,7 +460,7 @@ const abi = [
         "type": "address"
       }
     ],
-    "name": "isExcludedFromTax",
+    "name": "isOptin",
     "outputs": [
       {
         "internalType": "bool",
@@ -430,7 +473,59 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "lastSellPressureWindowUpdate",
+    "name": "marketingAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "marketingWallet",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxBuyFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxSellFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxWallet",
     "outputs": [
       {
         "internalType": "uint256",
@@ -468,13 +563,19 @@ const abi = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "pair",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "name": "pairs",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -484,7 +585,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "addr",
+        "name": "holder",
         "type": "address"
       }
     ],
@@ -503,11 +604,31 @@ const abi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "account",
+        "name": "token",
         "type": "address"
       }
     ],
-    "name": "removeExcludedFromTax",
+    "name": "recordAmmPairWith",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "removeFromBlacklist",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "removeLimits",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -521,28 +642,16 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "rewardCollector",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "rewardOptin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "rewardToken",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "rewardOptout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -560,7 +669,7 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "sellPressureWindow",
+    "name": "sellMarketingFee",
     "outputs": [
       {
         "internalType": "uint256",
@@ -573,7 +682,20 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "sellTaxLimit",
+    "name": "sellRewardFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "sellTotalFee",
     "outputs": [
       {
         "internalType": "uint256",
@@ -588,11 +710,16 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_buyTaxLimit",
+        "name": "rewardFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "marketingFee",
         "type": "uint256"
       }
     ],
-    "name": "setBuyTaxLimit",
+    "name": "setBuyFee",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -601,11 +728,24 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sellPressureWindow",
+        "name": "_distributionThreshold",
         "type": "uint256"
       }
     ],
-    "name": "setSellPressureWindow",
+    "name": "setDistributionThreshold",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_marketingWallet",
+        "type": "address"
+      }
+    ],
+    "name": "setMarketingWallet",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -614,11 +754,16 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sellTaxLimit",
+        "name": "rewardFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "marketingFee",
         "type": "uint256"
       }
     ],
-    "name": "setSellTaxLimit",
+    "name": "setSellFee",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -637,23 +782,16 @@ const abi = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "startTrading",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "swapRouter",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "contract ISwapRouter",
-        "name": "",
+        "internalType": "address",
+        "name": "_token",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
+    "name": "sweep",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -664,6 +802,32 @@ const abi = [
         "internalType": "string",
         "name": "",
         "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalETHClaimed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalETHDistributed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -685,19 +849,6 @@ const abi = [
   {
     "inputs": [],
     "name": "totalSupply",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalwTAORewards",
     "outputs": [
       {
         "internalType": "uint256",
@@ -776,22 +927,22 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "triggerRewards",
+    "name": "withdrawMarketing",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "wTAOR",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amountToWithdraw",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "withdrawMarketing",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

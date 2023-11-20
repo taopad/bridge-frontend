@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccount, usePrepareContractWrite, useContractWrite } from "wagmi";
-import { IUniswapV2Router02Contract, NativeTokenContract } from "@/config/contracts";
+import { RouterContract, NativeTokenContract } from "@/config/contracts";
 
 function useApprove() {
     const { isConnected, address } = useAccount()
@@ -9,7 +9,7 @@ function useApprove() {
     const { config } = usePrepareContractWrite({
         ...NativeTokenContract,
         "functionName": "approve",
-        args: [IUniswapV2Router02Contract.address, BigInt(1000000 * (10 ** 18))],
+        args: [RouterContract.address, BigInt(1000000 * (10 ** 18))],
         account: address,
         enabled: isConnected,
     })
