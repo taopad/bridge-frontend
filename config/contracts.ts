@@ -1,6 +1,6 @@
-import NativeTokenAbi from "./abi/NativeToken"
-import RewardTokenAbi from "./abi/IERC20Metadata"
-import IUniswapV2RouterAbi from "./abi/IUniswapV2Router02"
+import NativeTokenAbi from "./abi/NativeToken";
+import RewardTokenAbi from "./abi/IERC20Metadata";
+import IUniswapV2RouterAbi from "./abi/IUniswapV2Router02";
 
 if (!process.env.NEXT_PUBLIC_ROUTER_ADDRESS) throw Error("NEXT_PUBLIC_ROUTER_ADDRESS env variable must be set");
 if (!process.env.NEXT_PUBLIC_NATIVE_TOKEN_ADDRESS) throw Error("NEXT_PUBLIC_NATIVE_TOKEN_ADDRESS env variable must be set");

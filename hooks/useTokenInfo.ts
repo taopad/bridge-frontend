@@ -1,5 +1,5 @@
 import { useContractReads } from "wagmi";
-import { NativeTokenContract, RewardTokenContract } from "@/config/contract";
+import { NativeTokenContract, RewardTokenContract } from "@/config/contracts";
 
 export function useTokenInfo() {
     return useContractReads({
