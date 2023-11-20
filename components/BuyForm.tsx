@@ -1,13 +1,12 @@
 "use client";
 
-import { useBlockNumber, useAccount, usePrepareContractWrite, useContractWrite } from "wagmi";
+import { useAccount, usePrepareContractWrite, useContractWrite } from "wagmi";
 import { IUniswapV2Router02Contract, NativeTokenContract } from "@/config/contracts";
 import { useBigintInput } from "@/hooks/useBigintInput";
 
 const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 
 function useBuyToken(amount: bigint) {
-    const blocknumber = useBlockNumber()
     const { isConnected, address } = useAccount()
 
     const deadline = BigInt(Math.floor(Date.now() / 1000) + (60 * 60 * 24))
@@ -18,7 +17,7 @@ function useBuyToken(amount: bigint) {
         args: [0n, [WETH, NativeTokenContract.address], address ?? "0x", deadline],
         account: address,
         value: amount,
-        enabled: isConnected && blocknumber.isSuccess && amount > 0,
+        enabled: isConnected && amount > 0,
     })
 
     return useContractWrite(config)

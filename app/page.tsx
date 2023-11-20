@@ -3,6 +3,7 @@ import { RewardTokenSymbol } from "@/components/RewardTokenSymbol";
 import { NativeTokenSymbol } from "@/components/NativeTokenSymbol";
 import { NativeTokenBalance } from "@/components/NativeTokenBalance";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
+import { ApproveForm } from "@/components/ApproveForm";
 import { BuyForm } from "@/components/BuyForm";
 
 export default function Home() {
@@ -29,6 +30,9 @@ export default function Home() {
             </div>
             <div>
                 <BuyForm />
+            </div>
+            <div>
+                <ApproveForm />
             </div>
         </main>
     )
