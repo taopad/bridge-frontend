@@ -585,7 +585,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "holder",
+        "name": "addr",
         "type": "address"
       }
     ],
@@ -642,6 +642,19 @@ const abi = [
   },
   {
     "inputs": [],
+    "name": "rewardBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "rewardOptin",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -652,6 +665,19 @@ const abi = [
     "name": "rewardOptout",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rewardToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -727,12 +753,12 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_distributionThreshold",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_marketingWallet",
+        "type": "address"
       }
     ],
-    "name": "setDistributionThreshold",
+    "name": "setMarketingWallet",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -740,12 +766,12 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_marketingWallet",
-        "type": "address"
+        "internalType": "uint24",
+        "name": "_poolFee",
+        "type": "uint24"
       }
     ],
-    "name": "setMarketingWallet",
+    "name": "setPoolFee",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -782,6 +808,19 @@ const abi = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "swapRouter",
+    "outputs": [
+      {
+        "internalType": "contract ISwapRouter",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -809,32 +848,6 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "totalETHClaimed",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalETHDistributed",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "totalShares",
     "outputs": [
       {
@@ -849,6 +862,32 @@ const abi = [
   {
     "inputs": [],
     "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalTokenClaimed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalTokenDistributed",
     "outputs": [
       {
         "internalType": "uint256",

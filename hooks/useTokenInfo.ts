@@ -1,5 +1,5 @@
 import { useContractReads } from "wagmi";
-import { NativeTokenContract } from "@/config/contracts";
+import { NativeTokenContract, RewardTokenContract } from "@/config/contracts";
 
 export function useTokenInfo() {
     return useContractReads({
@@ -12,6 +12,14 @@ export function useTokenInfo() {
                 ...NativeTokenContract,
                 functionName: "decimals",
             },
+            {
+                ...RewardTokenContract,
+                functionName: "symbol",
+            },
+            {
+                ...RewardTokenContract,
+                functionName: "decimals",
+            },
         ],
         select: (data) => ({
             native: {
@@ -19,8 +27,8 @@ export function useTokenInfo() {
                 decimals: data[1],
             },
             reward: {
-                symbol: { result: "ETH" },
-                decimals: { result: 18 },
+                symbol: data[2],
+                decimals: data[3],
             },
         })
     })

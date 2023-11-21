@@ -2,6 +2,7 @@ import { BuyForm } from "@/components/BuyForm";
 import { SellForm } from "@/components/SellForm";
 import { ClaimForm } from "@/components/ClaimForm";
 import { ApproveForm } from "@/components/ApproveForm";
+import { RewardBalance } from "@/components/RewardBalance";
 import { PendingRewards } from "@/components/PendingRewards";
 import { DistributeForm } from "@/components/DistributeForm";
 import { RewardTokenSymbol } from "@/components/RewardTokenSymbol";
@@ -12,40 +13,34 @@ import { WalletConnectButton } from "@/components/WalletConnectButton";
 export default function Home() {
     return (
         <main className="flex flex-col gap-4 container mx-auto">
-            <div>
-                <WalletConnectButton />
-            </div>
-            <div>
-                <a
-                    href="https://faucet.buildbear.io/thundering-jek-tono-porkins-d5eff8e7"
-                    rel="noreffer"
-                    target="_blank"
-                    className="text-blue-500"
-                >
-                    Faucet
-                </a>
-            </div >
+            <WalletConnectButton />
+            <hr />
+            <a
+                href="https://faucet.buildbear.io/thundering-jek-tono-porkins-d5eff8e7"
+                rel="noreffer"
+                target="_blank"
+                className="text-blue-500"
+            >
+                Faucet
+            </a>
+            <hr />
             <div>
                 Your balance: <NativeTokenBalance /> $<NativeTokenSymbol />
             </div>
+            <hr />
             <div>
-                Your rewards: <PendingRewards /> $<RewardTokenSymbol />
+                Your pending rewards: <PendingRewards /> $<RewardTokenSymbol />
             </div>
+            <ClaimForm />
+            <hr />
             <div>
-                <ClaimForm />
+                Taxes to distribute: <RewardBalance /> $<NativeTokenSymbol />
             </div>
-            <div>
-                <DistributeForm />
-            </div>
-            <div>
-                <BuyForm />
-            </div>
-            <div>
-                <SellForm />
-            </div>
-            <div>
-                <ApproveForm />
-            </div>
-        </main >
+            <DistributeForm />
+            <hr />
+            <BuyForm />
+            <SellForm />
+            <ApproveForm />
+        </main>
     )
 }

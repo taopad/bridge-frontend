@@ -6,7 +6,7 @@ if (!process.env.NEXT_PUBLIC_TESTNET_EXPLORER_URL) throw Error("NEXT_PUBLIC_TEST
 
 export const testnet = {
     id: parseInt(process.env.NEXT_PUBLIC_TESTNET_CHAIN_ID),
-    name: 'PeTAO testnet',
+    name: 'Niera testnet',
     network: 'mainnet fork',
     nativeCurrency: { name: 'BB ETH', symbol: 'BBETH', decimals: 18 },
     rpcUrls: {
