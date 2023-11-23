@@ -473,19 +473,6 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "marketingAmount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "marketingWallet",
     "outputs": [
       {
@@ -642,19 +629,6 @@ const abi = [
   },
   {
     "inputs": [],
-    "name": "rewardBalance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "rewardOptin",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -672,7 +646,7 @@ const abi = [
     "name": "rewardToken",
     "outputs": [
       {
-        "internalType": "contract IERC20",
+        "internalType": "contract IERC20Metadata",
         "name": "",
         "type": "address"
       }
@@ -754,7 +728,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_marketingWallet",
+        "name": "newMarketingWallet",
         "type": "address"
       }
     ],
@@ -823,8 +797,8 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_token",
+        "internalType": "contract IERC20",
+        "name": "token",
         "type": "address"
       }
     ],
@@ -960,26 +934,6 @@ const abi = [
       }
     ],
     "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "withdrawMarketing",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountToWithdraw",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawMarketing",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

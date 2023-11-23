@@ -16,7 +16,7 @@ export default function Home() {
             <WalletConnectButton />
             <hr />
             <a
-                href="https://faucet.buildbear.io/thundering-jek-tono-porkins-d5eff8e7"
+                href="https://faucet.buildbear.io/sour-bib-fortuna-15b6b730"
                 rel="noreffer"
                 target="_blank"
                 className="text-blue-500"

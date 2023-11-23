@@ -35,7 +35,7 @@ export function SellForm() {
                 value={amount.valueStr}
                 onChange={e => amount.setValueStr(e.target.value.trim())}
                 className="border px-4 py-2"
-                placeholder="PeTAO"
+                placeholder="$NTKN"
             />
             <button
                 type="button"

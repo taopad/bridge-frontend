@@ -6,7 +6,8 @@ export function useAppInfo() {
         contracts: [
             {
                 ...NativeTokenContract,
-                functionName: "rewardBalance",
+                functionName: "balanceOf",
+                args: [NativeTokenContract.address],
             },
         ],
         watch: true,

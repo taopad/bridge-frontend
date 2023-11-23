@@ -36,7 +36,7 @@ export function BuyForm() {
                 value={amount.valueStr}
                 onChange={e => amount.setValueStr(e.target.value.trim())}
                 className="border px-4 py-2"
-                placeholder="eth"
+                placeholder="$ETH"
             />
             <button
                 type="button"
