@@ -4,10 +4,10 @@ import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig } from 'wagmi';
 import { publicProvider } from "wagmi/providers/public"
 import { mainnet } from "wagmi/chains";
-import { testnet } from "./testnet";
+import { buildTestnet } from "./testnet";
 
 // select the chain
-const chain = process.env.NEXT_PUBLIC_APP_ENV === "prod" ? mainnet : testnet
+const chain = process.env.NEXT_PUBLIC_APP_ENV === "prod" ? mainnet : buildTestnet()
 
 // Beh project id
 const projectId = "cc0001030a2db410113db693aa39f465"
