@@ -1,7 +1,7 @@
-import '@rainbow-me/rainbowkit/styles.css';
+import "@rainbow-me/rainbowkit/styles.css";
 
-import { getDefaultWallets } from '@rainbow-me/rainbowkit';
-import { configureChains, createConfig } from 'wagmi';
+import { getDefaultWallets } from "@rainbow-me/rainbowkit";
+import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public"
 import { mainnet } from "wagmi/chains";
 import { buildTestnet } from "./testnet";
@@ -18,7 +18,7 @@ export const { chains, publicClient } = configureChains([chain], [
 ]);
 
 const { connectors } = getDefaultWallets({
-    appName: 'Niera reward app',
+    appName: "TaoPad",
     projectId,
     chains,
 });

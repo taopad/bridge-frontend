@@ -7,7 +7,7 @@ export function buildTestnet() {
 
     return {
         id: parseInt(process.env.NEXT_PUBLIC_TESTNET_CHAIN_ID),
-        name: 'Niera testnet',
+        name: 'TaoPad testnet',
         network: 'mainnet fork',
         nativeCurrency: { name: 'BB ETH', symbol: 'BBETH', decimals: 18 },
         rpcUrls: {

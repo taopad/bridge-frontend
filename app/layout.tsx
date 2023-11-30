@@ -1,22 +1,26 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
 
-import { WalletProvider } from '@/components/WalletProvider'
+import { Navbar } from "@/components/Navbar";
+import { WalletProvider } from "@/components/WalletProvider";
 
-const inter = Inter({ subsets: ['latin'] })
+const myFont = localFont({ src: "./Fontspring-DEMO-rocgroteskwide-medium.otf" })
 
 export const metadata: Metadata = {
-    title: 'Niera reward App',
-    description: 'Niera reward App',
+    title: 'TaoPad',
+    description: 'TaoPad app',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={inter.className}>
+            <body className={`bg-black text-white ${myFont.className}`}>
                 <WalletProvider>
-                    {children}
+                    <div className="container mx-auto mt-4">
+                        <Navbar />
+                        {children}
+                    </div>
                 </WalletProvider>
             </body>
         </html>

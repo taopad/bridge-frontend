@@ -15,19 +15,22 @@ export function ConnectButton() {
     if (!hasMounted) return <FallbackButton />
 
     if (!isConnected) return (
-        <button className="btn btn-primary w-full" onClick={openConnectModal}>
+        <button
+            className="btn text-xs px-4 py-1 border border-white rounded-full"
+            onClick={openConnectModal}
+        >
             Connect wallet
         </button>
     )
 
     if (chain?.unsupported) return (
-        <button className="btn btn-primary w-full" onClick={openChainModal}>
+        <button className="btn text-xs px-4 py-1 bg-red-900 border border-white rounded-full" onClick={openChainModal}>
             Wrong chain
         </button>
     )
 
     return (
-        <button className="btn btn-primary w-full" onClick={openAccountModal}>
+        <button className="btn text-xs px-4 py-1 border border-white rounded-full" onClick={openAccountModal}>
             {formatAddress(address)}
         </button>
     )
@@ -35,7 +38,7 @@ export function ConnectButton() {
 
 function FallbackButton() {
     return (
-        <button className="btn w-full" disabled={true}>
+        <button className="btn" disabled={true}>
             <div className="w-16 h-5"></div>
         </button>
     )
