@@ -1,31 +1,46 @@
 "use client";
 
-import { usePrepareContractWrite, useContractWrite } from "wagmi";
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { Spinner } from "@/components/Spinner";
 
 function useClaim() {
-    const { config } = usePrepareContractWrite({
+    const userInfo = useUserInfo()
+
+    const rewards = userInfo.data?.rewards.result ?? 0n
+
+    const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
         "functionName": "claim",
+        enabled: rewards > 0
     })
 
-    return useContractWrite(config)
+    const action = useContractWrite(prepare.config)
+
+    const wait = useWaitForTransaction({ hash: action.data?.hash })
+
+    return { prepare, action, wait }
 }
 
 export function ClaimForm() {
-    const { isLoading, write } = useClaim()
+    const userInfo = useUserInfo()
+    const { prepare, action, wait } = useClaim()
 
-    const disabled = !write || isLoading
+    const rewards = userInfo.data?.rewards.result ?? 0n
+
+    const loading = prepare.isLoading || action.isLoading || wait.isLoading
+    const disabled = loading || rewards === 0n || !action.write
 
     return (
         <form onSubmit={e => e.preventDefault()}>
             <button
                 type="button"
                 className="card-button"
-                onClick={() => write?.()}
+                onClick={() => action.write?.()}
                 disabled={disabled}
             >
-                Claim
+                {loading ? <Spinner /> : "Claim"}
             </button>
         </form>
     )

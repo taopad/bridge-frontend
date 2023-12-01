@@ -4,6 +4,7 @@ import { formatUnits } from "viem";
 import { useTokenInfo } from "@/hooks/useTokenInfo";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useRewardBalance } from "@/hooks/useRewardBalance";
+import { formatAmount } from "@/utils/formatAmount";
 
 export function RewardBalance() {
     const tokenInfo = useTokenInfo()
@@ -13,11 +14,12 @@ export function RewardBalance() {
     const loaded = hasMounted && tokenInfo.isSuccess && rewardBalance.isSuccess
 
     const decimals = tokenInfo.data?.native.decimals.result ?? 0
-    const balance = rewardBalance.data?.rewardBalance.result ?? 0n
+    const balance = rewardBalance.data ?? 0n
+    const units = formatUnits(balance, decimals)
 
-    return (
-        <span>
-            {loaded ? formatUnits(balance, decimals) : '-'}
-        </span>
-    )
+    if (loaded) {
+        return <span title={units}>{formatAmount(units)}</span>
+    }
+
+    return null
 }

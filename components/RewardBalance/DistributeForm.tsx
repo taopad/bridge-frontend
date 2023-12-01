@@ -1,31 +1,37 @@
 "use client";
 
-import { usePrepareContractWrite, useContractWrite } from "wagmi";
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
+import { Spinner } from "@/components/Spinner";
 
 function useDistribute() {
-    const { config } = usePrepareContractWrite({
+    const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
         "functionName": "distribute",
     })
 
-    return useContractWrite(config)
+    const action = useContractWrite(prepare.config)
+
+    const wait = useWaitForTransaction({ hash: action.data?.hash })
+
+    return { prepare, action, wait }
 }
 
 export function DistributeForm() {
-    const { isLoading, write } = useDistribute()
+    const { prepare, action, wait } = useDistribute()
 
-    const disabled = !write || isLoading
+    const loading = prepare.isLoading || action.isLoading || wait.isLoading
+    const disabled = loading || !action.write
 
     return (
         <form onSubmit={e => e.preventDefault()}>
             <button
                 type="button"
                 className="card-button"
-                onClick={() => write?.()}
+                onClick={() => action.write?.()}
                 disabled={disabled}
             >
-                Distribute
+                {loading ? <Spinner /> : "Distribute"}
             </button>
         </form>
     )

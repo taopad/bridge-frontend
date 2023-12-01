@@ -8,7 +8,9 @@ export function PendingRewardsCard() {
             <div className="flex-1">
                 <h2>Pending $<RewardTokenSymbol /> rewards</h2>
                 <div className="text-right">
-                    <span className="amount">340,243</span> $<RewardTokenSymbol />
+                    <span className="amount">
+                        <PendingRewards />
+                    </span> $<RewardTokenSymbol />
                 </div>
             </div>
             <ClaimForm />

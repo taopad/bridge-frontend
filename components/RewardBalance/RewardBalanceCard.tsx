@@ -1,6 +1,7 @@
 import { NativeTokenSymbol } from "@/components/NativeTokenSymbol";
 import { BuyTotalFee } from "./BuyTotalFee";
 import { SellTotalFee } from "./SellTotalFee";
+import { RewardBalance } from "./RewardBalance";
 import { DistributeForm } from "./DistributeForm";
 
 export function RewardBalanceCard() {
@@ -21,9 +22,11 @@ export function RewardBalanceCard() {
                     <span className="amount hidden lg:inline">/</span>
                     <div>
                         <div className="text-right">
-                            <span className="amount">4,855,44</span> $<NativeTokenSymbol />
+                            <span className="amount">
+                                <RewardBalance />
+                            </span> $<NativeTokenSymbol />
                         </div>
-                        <div className="hidden lg:inline">Current rewards</div>
+                        <div className="hidden lg:inline">Collected tax</div>
                     </div>
                 </div>
             </div>

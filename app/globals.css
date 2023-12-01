@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+    input[type=number] {
+        @apply text-black
+    }
+
     .amount {
         @apply text-[48px]
     }

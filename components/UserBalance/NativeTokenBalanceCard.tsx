@@ -6,7 +6,9 @@ export function NativeTokenBalanceCard() {
         <div className="card">
             <h2>Your $<NativeTokenSymbol /> balance</h2>
             <div className="text-right">
-                <span className="amount">120,000</span> $<NativeTokenSymbol />
+                <span className="amount">
+                    <NativeTokenBalance />
+                </span> $<NativeTokenSymbol />
             </div>
         </div>
     )
