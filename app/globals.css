@@ -3,11 +3,19 @@
 @tailwind utilities;
 
 @layer components {
+    .amount {
+        @apply text-[48px]
+    }
+
     .card {
-        @apply w-96 px-8 py-4 border border-white rounded-[36px] lg:w-[480px]
+        @apply flex-1 px-8 py-4 border border-white rounded-[36px]
     }
 
     .card-button {
-        @apply w-full p-2 text-black bg-white rounded-lg lg:h-16
+        @apply w-full p-2 rounded-lg text-black bg-white text-lg lg:min-w-[80px] lg:h-[80px] hover:bg-slate-200 disabled:bg-slate-200
+    }
+
+    .btn-wallet {
+        @apply px-4 py-1 border border-white rounded-full
     }
 }

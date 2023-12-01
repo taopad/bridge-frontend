@@ -1,19 +1,19 @@
 "use client";
 
 import { formatUnits } from "viem";
-import { useAppInfo } from "@/hooks/useAppInfo";
 import { useTokenInfo } from "@/hooks/useTokenInfo";
 import { useHasMounted } from "@/hooks/useHasMounted";
+import { useRewardBalance } from "@/hooks/useRewardBalance";
 
 export function RewardBalance() {
-    const appInfo = useAppInfo()
     const tokenInfo = useTokenInfo()
     const hasMounted = useHasMounted()
+    const rewardBalance = useRewardBalance()
 
-    const loaded = hasMounted && tokenInfo.isSuccess && appInfo.isSuccess
+    const loaded = hasMounted && tokenInfo.isSuccess && rewardBalance.isSuccess
 
     const decimals = tokenInfo.data?.native.decimals.result ?? 0
-    const balance = appInfo.data?.rewardBalance.result ?? 0n
+    const balance = rewardBalance.data?.rewardBalance.result ?? 0n
 
     return (
         <span>

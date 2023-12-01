@@ -21,7 +21,7 @@ export function DistributeForm() {
         <form onSubmit={e => e.preventDefault()}>
             <button
                 type="button"
-                className="border px-4 py-2"
+                className="card-button"
                 onClick={() => write?.()}
                 disabled={disabled}
             >

@@ -6,13 +6,21 @@ export function useAppInfo() {
         contracts: [
             {
                 ...NativeTokenContract,
-                functionName: "balanceOf",
-                args: [NativeTokenContract.address],
+                functionName: "buyTotalFee",
+            },
+            {
+                ...NativeTokenContract,
+                functionName: "sellTotalFee",
+            },
+            {
+                ...NativeTokenContract,
+                functionName: "feeDenominator",
             },
         ],
-        watch: true,
         select: (data) => ({
-            rewardBalance: data[0],
+            buyTotalFee: data[0],
+            sellTotalFee: data[1],
+            feeDenominator: data[2],
         })
     })
 }
