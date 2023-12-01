@@ -1,4 +1,8 @@
-import { RewardBalanceCard } from "@/components/RewardBalance/RewardBalanceCard";
+"use client";
+
+import { ExpectedRewards } from "@/components/ExpectedRewards";
+import { RewardTokenSymbol } from "@/components/RewardTokenSymbol";
+import { DistributionCard } from "@/components/Distribution/DistributionCard";
 import { PendingRewardsCard } from "@/components/PendingRewards/PendingRewardsCard";
 import { NativeTokenBalanceCard } from "@/components/UserBalance/NativeTokenBalanceCard";
 
@@ -9,7 +13,12 @@ export default function Home() {
                 <NativeTokenBalanceCard />
                 <PendingRewardsCard />
             </div>
-            <RewardBalanceCard />
+            <DistributionCard />
+            <div className="card">
+                <h2>Expected amount of $wTao to distribute</h2>
+                <ExpectedRewards /> $<RewardTokenSymbol />
+                <p>Will be removed in production</p>
+            </div>
         </main>
     )
 }

@@ -1,10 +1,10 @@
 import { NativeTokenSymbol } from "@/components/NativeTokenSymbol";
 import { BuyTotalFee } from "./BuyTotalFee";
 import { SellTotalFee } from "./SellTotalFee";
-import { RewardBalance } from "./RewardBalance";
+import { CollectedTax } from "./CollectedTax";
 import { DistributeForm } from "./DistributeForm";
 
-export function RewardBalanceCard() {
+export function DistributionCard() {
     return (
         <div className="card flex flex-col gap-4 lg:flex-row lg:items-center">
             <div className="flex-1">
@@ -23,7 +23,7 @@ export function RewardBalanceCard() {
                     <div>
                         <div className="text-right">
                             <span className="amount">
-                                <RewardBalance />
+                                <CollectedTax />
                             </span> $<NativeTokenSymbol />
                         </div>
                         <div className="hidden lg:inline">Collected tax</div>

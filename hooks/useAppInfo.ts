@@ -16,11 +16,16 @@ export function useAppInfo() {
                 ...NativeTokenContract,
                 functionName: "feeDenominator",
             },
+            {
+                ...NativeTokenContract,
+                functionName: "poolFee",
+            },
         ],
         select: (data) => ({
             buyTotalFee: data[0],
             sellTotalFee: data[1],
             feeDenominator: data[2],
+            poolFee: data[3],
         })
     })
 }

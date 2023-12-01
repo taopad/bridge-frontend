@@ -3,19 +3,19 @@
 import { formatUnits } from "viem";
 import { useTokenInfo } from "@/hooks/useTokenInfo";
 import { useHasMounted } from "@/hooks/useHasMounted";
-import { useRewardBalance } from "@/hooks/useRewardBalance";
+import { useCollectedTax } from "@/hooks/useCollectedTax";
 import { formatAmount } from "@/utils/formatAmount";
 
-export function RewardBalance() {
+export function CollectedTax() {
     const tokenInfo = useTokenInfo()
     const hasMounted = useHasMounted()
-    const rewardBalance = useRewardBalance()
+    const collectedTax = useCollectedTax()
 
-    const loaded = hasMounted && tokenInfo.isSuccess && rewardBalance.isSuccess
+    const loaded = hasMounted && tokenInfo.isSuccess && collectedTax.isSuccess
 
+    const amount = collectedTax.data ?? 0n
     const decimals = tokenInfo.data?.native.decimals.result ?? 0
-    const balance = rewardBalance.data ?? 0n
-    const units = formatUnits(balance, decimals)
+    const units = formatUnits(amount, decimals)
 
     if (loaded) {
         return <span title={units}>{formatAmount(units)}</span>
