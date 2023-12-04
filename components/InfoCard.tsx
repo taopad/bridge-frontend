@@ -11,7 +11,7 @@ export function InfoCard() {
                 <div className="lg:w-48 text-right">Contract:</div>
                 <input
                     type="text"
-                    className="bg-black text-white w-full border-0 flex-1"
+                    className="bg-black text-white w-full border-0 flex-1 focus:outline-none focus:ring-0"
                     value={NativeTokenContract.address}
                 />
             </p>

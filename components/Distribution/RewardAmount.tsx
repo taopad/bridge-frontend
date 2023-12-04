@@ -1,23 +1,23 @@
 "use client";
 
 import { formatUnits } from "viem";
-import { useTokenInfo } from "@/hooks/useTokenInfo";
+import { useAppWatch } from "@/hooks/useAppWatch";
+import { useAppStatic } from "@/hooks/useAppStatic";
 import { useHasMounted } from "@/hooks/useHasMounted";
-import { useRewardInfo } from "@/hooks/useRewardInfo";
 import { useExpectedRewards } from "@/hooks/useExpectedRewards";
 import { formatAmount } from "@/utils/formatAmount";
 
 export function RewardAmount() {
-    const tokenInfo = useTokenInfo()
+    const appWatch = useAppWatch()
+    const appStatic = useAppStatic()
     const hasMounted = useHasMounted()
-    const rewardInfo = useRewardInfo()
     const expectedRewards = useExpectedRewards()
 
-    const loaded = hasMounted && tokenInfo.isSuccess
+    const loaded = hasMounted && appStatic.isSuccess
 
     const expected = expectedRewards.data ?? 0n
-    const donations = rewardInfo.data?.donations.result ?? 0n
-    const decimals = tokenInfo.data?.reward.decimals.result ?? 0
+    const donations = appWatch.data?.donations.result ?? 0n
+    const decimals = appStatic.data?.tokens.reward.decimals.result ?? 0
     const units = formatUnits(expected + donations, decimals)
 
     if (loaded) {

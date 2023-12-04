@@ -2,16 +2,16 @@
 
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
+import { useAppWatch } from "@/hooks/useAppWatch";
 import { useExpectedRewards } from "@/hooks/useExpectedRewards";
 import { Spinner } from "@/components/Spinner";
-import { useRewardInfo } from "@/hooks/useRewardInfo";
 
 function useDistribute() {
-    const rewardInfo = useRewardInfo()
+    const appWatch = useAppWatch()
     const expectedRewards = useExpectedRewards()
 
     const expected = expectedRewards.data ?? 0n
-    const donations = rewardInfo.data?.donations.result ?? 0n
+    const donations = appWatch.data?.donations.result ?? 0n
 
     const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
@@ -30,11 +30,11 @@ function useDistribute() {
 export function DistributeForm() {
     const { prepare, action, wait } = useDistribute()
 
-    const rewardInfo = useRewardInfo()
+    const appWatch = useAppWatch()
     const expectedRewards = useExpectedRewards()
 
     const expected = expectedRewards.data ?? 0n
-    const donations = rewardInfo.data?.donations.result ?? 0n
+    const donations = appWatch.data?.donations.result ?? 0n
 
     const hasRewards = (expected + donations) > 0
 

@@ -2,13 +2,13 @@
 
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
-import { useUserInfo } from "@/hooks/useUserInfo";
+import { useUserWatch } from "@/hooks/useUserWatch";
 import { Spinner } from "@/components/Spinner";
 
 function useClaim() {
-    const userInfo = useUserInfo()
+    const userWatch = useUserWatch()
 
-    const rewards = userInfo.data?.rewards.result ?? 0n
+    const rewards = userWatch.data?.rewards.result ?? 0n
 
     const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
@@ -24,10 +24,11 @@ function useClaim() {
 }
 
 export function ClaimForm() {
-    const userInfo = useUserInfo()
     const { prepare, action, wait } = useClaim()
 
-    const rewards = userInfo.data?.rewards.result ?? 0n
+    const userWatch = useUserWatch()
+
+    const rewards = userWatch.data?.rewards.result ?? 0n
 
     const loading = prepare.isLoading || action.isLoading || wait.isLoading
     const disabled = loading || rewards === 0n || !action.write

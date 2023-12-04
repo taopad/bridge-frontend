@@ -6,7 +6,7 @@ import { useBigintInput } from "@/hooks/useBigintInput";
 
 const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 
-function useBuyToken(amount: bigint) {
+function useBuyToken(amount: bigint, reset: () => void) {
     const { isConnected, address } = useAccount()
 
     const deadline = BigInt(Math.floor(Date.now() / 1000))
@@ -20,12 +20,12 @@ function useBuyToken(amount: bigint) {
         enabled: isConnected && amount > 0,
     })
 
-    return useContractWrite(config)
+    return useContractWrite({ ...config, onSuccess: reset })
 }
 
 export function BuyForm() {
     const amount = useBigintInput(0n, 18)
-    const { isLoading, write } = useBuyToken(amount.value)
+    const { isLoading, write } = useBuyToken(amount.value, amount.reset)
 
     const disabled = amount.value === 0n || !write || isLoading
 

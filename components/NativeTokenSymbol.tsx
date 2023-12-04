@@ -1,15 +1,15 @@
 "use client";
 
-import { useTokenInfo } from "@/hooks/useTokenInfo";
+import { useAppStatic } from "@/hooks/useAppStatic";
 import { useHasMounted } from "@/hooks/useHasMounted";
 
 export function NativeTokenSymbol() {
-    const tokenInfo = useTokenInfo()
+    const appStatic = useAppStatic()
     const hasMounted = useHasMounted()
 
-    const loaded = hasMounted && tokenInfo.isSuccess
+    const loaded = hasMounted && appStatic.isSuccess
 
-    const symbol = tokenInfo.data?.native.symbol.result ?? ""
+    const symbol = appStatic.data?.tokens.native.symbol.result ?? ""
 
     return (
         <span>

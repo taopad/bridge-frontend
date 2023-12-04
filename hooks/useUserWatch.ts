@@ -1,7 +1,7 @@
 import { useAccount, useContractReads } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
 
-export function useUserInfo() {
+export function useUserWatch() {
     const { isConnected, address } = useAccount()
 
     return useContractReads({

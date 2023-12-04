@@ -1,19 +1,19 @@
 "use client";
 
 import { formatUnits } from "viem";
-import { useTokenInfo } from "@/hooks/useTokenInfo";
-import { useRewardInfo } from "@/hooks/useRewardInfo";
+import { useAppWatch } from "@/hooks/useAppWatch";
+import { useAppStatic } from "@/hooks/useAppStatic";
 import { useHasMounted } from "@/hooks/useHasMounted";
 
 export function TotalShares() {
-    const tokenInfo = useTokenInfo()
-    const rewardInfo = useRewardInfo()
+    const appWatch = useAppWatch()
+    const appStatic = useAppStatic()
     const hasMounted = useHasMounted()
 
-    const loaded = hasMounted && tokenInfo.isSuccess
+    const loaded = hasMounted && appStatic.isSuccess
 
-    const decimals = tokenInfo.data?.native.decimals.result ?? 0
-    const totalShares = rewardInfo.data?.totalShares.result ?? 0n
+    const decimals = appStatic.data?.tokens.native.decimals.result ?? 0
+    const totalShares = appWatch.data?.totalShares.result ?? 0n
     const units = formatUnits(totalShares, decimals);
 
     if (loaded) {

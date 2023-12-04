@@ -1,7 +1,7 @@
 import { useContractReads } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
 
-export function useRewardInfo() {
+export function useAppWatch() {
     return useContractReads({
         contracts: [
             {
