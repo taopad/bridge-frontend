@@ -13,7 +13,7 @@ export function RewardAmount() {
     const rewardInfo = useRewardInfo()
     const expectedRewards = useExpectedRewards()
 
-    const loaded = hasMounted && tokenInfo.isSuccess && rewardInfo.isSuccess && expectedRewards.isSuccess
+    const loaded = hasMounted && tokenInfo.isSuccess
 
     const expected = expectedRewards.data ?? 0n
     const donations = rewardInfo.data?.donations.result ?? 0n
@@ -24,5 +24,5 @@ export function RewardAmount() {
         return <span title={units}>{formatAmount(units)}</span>
     }
 
-    return 0
+    return null
 }

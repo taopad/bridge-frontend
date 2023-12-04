@@ -11,7 +11,7 @@ export function useExpectedRewards() {
 
     const poolFee = appInfo.data?.poolFee.result ?? 0
     const amountToSwapETH = rewardInfo.data?.amountToSwapETH.result ?? 0n
-    console.log(amountToSwapETH)
+
     return useContractRead({
         ...QuoterContract,
         functionName: "quoteExactInputSingle",

@@ -4,17 +4,20 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 import { NativeTokenContract } from "@/config/contracts";
 import { useExpectedRewards } from "@/hooks/useExpectedRewards";
 import { Spinner } from "@/components/Spinner";
+import { useRewardInfo } from "@/hooks/useRewardInfo";
 
 function useDistribute() {
+    const rewardInfo = useRewardInfo()
     const expectedRewards = useExpectedRewards()
 
     const expected = expectedRewards.data ?? 0n
+    const donations = rewardInfo.data?.donations.result ?? 0n
 
     const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
         "functionName": "distribute",
         args: [expected],
-        enabled: expectedRewards.isSuccess && expected > 0
+        enabled: (expected + donations) > 0
     })
 
     const action = useContractWrite(prepare.config)
@@ -25,12 +28,15 @@ function useDistribute() {
 }
 
 export function DistributeForm() {
-    const expectedRewards = useExpectedRewards()
     const { prepare, action, wait } = useDistribute()
 
-    const expected = expectedRewards.data ?? 0n
+    const rewardInfo = useRewardInfo()
+    const expectedRewards = useExpectedRewards()
 
-    const hasRewards = expectedRewards.isSuccess && expected > 0n
+    const expected = expectedRewards.data ?? 0n
+    const donations = rewardInfo.data?.donations.result ?? 0n
+
+    const hasRewards = (expected + donations) > 0
 
     const loading = prepare.isLoading || action.isLoading || wait.isLoading
     const disabled = loading || !hasRewards || !action.write
