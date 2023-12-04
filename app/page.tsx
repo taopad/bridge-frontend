@@ -1,7 +1,5 @@
 "use client";
 
-import { ExpectedRewards } from "@/components/ExpectedRewards";
-import { RewardTokenSymbol } from "@/components/RewardTokenSymbol";
 import { DistributionCard } from "@/components/Distribution/DistributionCard";
 import { PendingRewardsCard } from "@/components/PendingRewards/PendingRewardsCard";
 import { NativeTokenBalanceCard } from "@/components/UserBalance/NativeTokenBalanceCard";

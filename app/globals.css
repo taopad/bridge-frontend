@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+body {}
+
 @layer components {
     input[type=number] {
         @apply text-black
@@ -12,14 +14,14 @@
     }
 
     .card {
-        @apply flex-1 px-8 py-4 border border-white rounded-[36px]
+        @apply flex-1 px-8 py-4 bg-black border border-white rounded-[36px]
     }
 
     .card-button {
-        @apply w-full p-2 rounded-lg text-black bg-white text-lg lg:min-w-[80px] lg:h-[80px] hover:bg-slate-200 disabled:bg-slate-200
+        @apply w-full p-2 rounded-lg text-black bg-white text-lg lg:min-w-[80px] lg:h-[80px] hover:bg-slate-200 disabled:bg-slate-300
     }
 
     .btn-wallet {
-        @apply px-4 py-1 border border-white rounded-full
+        @apply px-4 py-1 bg-black border border-white rounded-full
     }
 }

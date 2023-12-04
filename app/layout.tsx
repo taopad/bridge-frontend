@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={`bg-black text-white ${myFont.className}`}>
+            <body className={`text-white ${myFont.className}`} style={{ backgroundImage: "url('/TaoBG20.jpg')" }}>
                 <WalletProvider>
                     <div className="container mx-auto mt-4 px-2">
                         <Navbar />
