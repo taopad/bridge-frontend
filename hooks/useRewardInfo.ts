@@ -16,6 +16,14 @@ export function useRewardInfo() {
             {
                 ...NativeTokenContract,
                 functionName: "rewardBalance",
+            },
+            {
+                ...NativeTokenContract,
+                functionName: "totalShares",
+            },
+            {
+                ...NativeTokenContract,
+                functionName: "totalRewardDistributed",
             }
         ],
         watch: true,
@@ -23,6 +31,8 @@ export function useRewardInfo() {
             collectedTax: data[0],
             amountToSwapETH: data[1],
             donations: data[2],
+            totalShares: data[3],
+            totalRewardDistributed: data[4],
         }),
     })
 }
