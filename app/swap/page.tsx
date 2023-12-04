@@ -8,7 +8,9 @@ const faucet = "https://faucet.buildbear.io/acute-grievous-8fc11010"
 export default function Swap() {
     return (
         <div className="flex flex-col gap-4">
-            <p>This page wont exist in production, buys and sells will happen on uniswap only</p>
+            <p>This page wont exist in production, buys and sells will happen on uniswap only.</p>
+            <p>0.01 BBETH max buy.</p>
+            <p>Must approve before selling.</p>
             <div>
                 <Link href={faucet} target="_blank">BBETH faucet</Link>
             </div>

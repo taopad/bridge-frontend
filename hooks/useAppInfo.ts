@@ -6,11 +6,11 @@ export function useAppInfo() {
         contracts: [
             {
                 ...NativeTokenContract,
-                functionName: "buyTotalFee",
+                functionName: "buyFee",
             },
             {
                 ...NativeTokenContract,
-                functionName: "sellTotalFee",
+                functionName: "sellFee",
             },
             {
                 ...NativeTokenContract,
@@ -22,8 +22,8 @@ export function useAppInfo() {
             },
         ],
         select: (data) => ({
-            buyTotalFee: data[0],
-            sellTotalFee: data[1],
+            buyFee: data[0],
+            sellFee: data[1],
             feeDenominator: data[2],
             poolFee: data[3],
         })

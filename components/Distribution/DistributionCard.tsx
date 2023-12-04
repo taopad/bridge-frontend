@@ -1,7 +1,7 @@
-import { NativeTokenSymbol } from "@/components/NativeTokenSymbol";
-import { BuyTotalFee } from "./BuyTotalFee";
-import { SellTotalFee } from "./SellTotalFee";
-import { CollectedTax } from "./CollectedTax";
+import { RewardTokenSymbol } from "@/components/RewardTokenSymbol";
+import { BuyFee } from "./BuyFee";
+import { SellFee } from "./SellFee";
+import { RewardAmount } from "./RewardAmount";
 import { DistributeForm } from "./DistributeForm";
 
 export function DistributionCard() {
@@ -11,22 +11,22 @@ export function DistributionCard() {
                 <h2>Rewards to distribute</h2>
                 <div className="flex flex-col justify-between mt-4 lg:flex-row">
                     <div className="hidden lg:inline">
-                        <span className="amount"><BuyTotalFee />%</span>
+                        <span className="amount"><BuyFee />%</span>
                         <div>Buy fee</div>
                     </div>
                     <span className="amount hidden lg:inline">/</span>
                     <div className="hidden lg:inline">
-                        <span className="amount"><SellTotalFee />%</span>
+                        <span className="amount"><SellFee />%</span>
                         <div>Sell fee</div>
                     </div>
                     <span className="amount hidden lg:inline">/</span>
                     <div>
                         <div className="text-right">
                             <span className="amount">
-                                <CollectedTax />
-                            </span> $<NativeTokenSymbol />
+                                <RewardAmount />
+                            </span> $<RewardTokenSymbol />
                         </div>
-                        <div className="hidden lg:inline">Collected tax</div>
+                        <div className="hidden lg:inline">Collected rewards</div>
                     </div>
                 </div>
             </div>

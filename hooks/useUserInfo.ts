@@ -16,11 +16,6 @@ export function useUserInfo() {
                 functionName: "pendingRewards",
                 args: [address ?? "0x"],
             },
-            {
-                ...NativeTokenContract,
-                functionName: "lastUpdateBlock",
-                args: [address ?? "0x"],
-            },
         ],
         watch: true,
         scopeKey: address,
@@ -28,7 +23,6 @@ export function useUserInfo() {
         select: (data) => ({
             balance: data[0],
             rewards: data[1],
-            lastUpdateBlock: data[2],
         })
     })
 }

@@ -14,11 +14,6 @@ export default function Home() {
                 <PendingRewardsCard />
             </div>
             <DistributionCard />
-            <div className="card">
-                <h2>Expected amount of $wTao to distribute</h2>
-                <ExpectedRewards /> $<RewardTokenSymbol />
-                <p>Will be removed in production</p>
-            </div>
         </main>
     )
 }
