@@ -12,12 +12,17 @@ function useDistribute() {
 
     const expected = expectedRewards.data ?? 0n
     const donations = appWatch.data?.donations.result ?? 0n
+    const amountToSwap = appWatch.data?.amountToSwapETH ?? 0n
+
+    const onlyDonations = appWatch.isSuccess && amountToSwap === 0n && donations > 0
+    const expectedPriceQuoted = expectedRewards.isSuccess && expected > 0
+
 
     const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
         "functionName": "distribute",
         args: [expected],
-        enabled: (expected + donations) > 0
+        enabled: onlyDonations || expectedPriceQuoted
     })
 
     const action = useContractWrite(prepare.config)

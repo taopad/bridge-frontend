@@ -11,13 +11,11 @@ export function NativeTokenBalance() {
     const userWatch = useUserWatch()
     const hasMounted = useHasMounted()
 
-    const loaded = hasMounted && appStatic.isSuccess && userWatch.isSuccess
-
     const decimals = appStatic.data?.tokens.native.decimals.result ?? 0
     const balance = userWatch.data?.balance.result ?? 0n
     const units = formatUnits(balance, decimals);
 
-    if (loaded) {
+    if (hasMounted) {
         return <span title={units}>{formatAmount(units)}</span>
     }
 

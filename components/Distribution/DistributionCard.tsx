@@ -11,12 +11,12 @@ export function DistributionCard() {
                 <h2>Rewards to distribute</h2>
                 <div className="flex flex-col justify-between mt-4 lg:flex-row">
                     <div className="hidden lg:inline">
-                        <span className="amount"><BuyFee />%</span>
+                        <span className="amount"><BuyFee /></span>
                         <div>Buy fee</div>
                     </div>
                     <span className="amount hidden lg:inline">/</span>
                     <div className="hidden lg:inline">
-                        <span className="amount"><SellFee />%</span>
+                        <span className="amount"><SellFee /></span>
                         <div>Sell fee</div>
                     </div>
                     <span className="amount hidden lg:inline">/</span>
@@ -24,7 +24,7 @@ export function DistributionCard() {
                         <div className="text-right">
                             <span className="amount">
                                 <RewardAmount />
-                            </span> $<RewardTokenSymbol />
+                            </span> <RewardTokenSymbol />
                         </div>
                         <div className="hidden lg:inline">Collected rewards</div>
                     </div>

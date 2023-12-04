@@ -7,14 +7,12 @@ export function SellFee() {
     const appStatic = useAppStatic()
     const hasMounted = useHasMounted()
 
-    const loaded = hasMounted && appStatic.isSuccess
-
     const sellFee = appStatic.data?.sellFee.result ?? 0
     const feeDenominator = appStatic.data?.feeDenominator.result ?? 0
 
-    return (
-        <span>
-            {loaded ? ((100 * sellFee) / feeDenominator).toString() : '-'}
-        </span>
-    )
+    if (hasMounted) {
+        return <span>{(100 * sellFee) / feeDenominator}%</span>
+    }
+
+    return null
 }

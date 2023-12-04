@@ -10,13 +10,11 @@ export function TotalRewardDistributed() {
     const appStatic = useAppStatic()
     const hasMounted = useHasMounted()
 
-    const loaded = hasMounted && appStatic.isSuccess
-
     const decimals = appStatic.data?.tokens.reward.decimals.result ?? 0
     const totalRewardDistributed = appWatch.data?.totalRewardDistributed.result ?? 0n
     const units = formatUnits(totalRewardDistributed, decimals);
 
-    if (loaded) {
+    if (hasMounted) {
         return <span title={units}>{parseFloat(units).toFixed(2)}</span>
     }
 

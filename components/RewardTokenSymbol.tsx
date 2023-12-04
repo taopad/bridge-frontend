@@ -7,13 +7,11 @@ export function RewardTokenSymbol() {
     const appStatic = useAppStatic()
     const hasMounted = useHasMounted()
 
-    const loaded = hasMounted && appStatic.isSuccess
+    const symbol = appStatic.data?.tokens.reward.symbol.result ?? ""
 
-    const symbol = appStatic.data?.tokens.reward.symbol.result ?? "-"
+    if (hasMounted) {
+        return <span>${symbol}</span>
+    }
 
-    return (
-        <span>
-            {loaded ? symbol : '-'}
-        </span>
-    )
+    return null
 }

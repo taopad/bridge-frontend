@@ -7,22 +7,23 @@ import { TotalRewardDistributed } from "./TotalRewardDistributed";
 export function InfoCard() {
     return (
         <div className="card flex flex-col gap-4">
-            <p className="flex gap-2">
+            <div className="flex gap-2">
                 <div className="lg:w-48 text-right">Contract:</div>
                 <input
                     type="text"
                     className="bg-black text-white w-full border-0 flex-1 focus:outline-none focus:ring-0"
                     value={NativeTokenContract.address}
+                    readOnly
                 />
-            </p>
-            <p className="flex gap-2">
+            </div>
+            <div className="flex gap-2">
                 <div className="lg:w-48 text-right">Total shares:</div>
-                <div><TotalShares /> $<NativeTokenSymbol /></div>
-            </p>
-            <p className="flex gap-2">
+                <div><TotalShares /> <NativeTokenSymbol /></div>
+            </div>
+            <div className="flex gap-2">
                 <div className="lg:w-48 text-right">Total distributed:</div>
-                <div><TotalRewardDistributed /> $<RewardTokenSymbol /></div>
-            </p>
+                <div><TotalRewardDistributed /> <RewardTokenSymbol /></div>
+            </div>
         </div>
     )
 }

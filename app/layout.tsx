@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         <Navbar />
                     </div>
                     <div className="flex justify-center my-10">
-                        <Link href="/swap" target="_blank">Buy $<NativeTokenSymbol /></Link>
+                        <Link href="/swap" target="_blank">Buy <NativeTokenSymbol /></Link>
                     </div>
                     <div className="max-w-[1024px] mx-auto mb-[120px] px-2">
                         {children}
