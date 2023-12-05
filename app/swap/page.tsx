@@ -3,7 +3,7 @@ import { SellForm } from "@/components/UtilSwap/SellForm";
 import { ApproveForm } from "@/components/UtilSwap/ApproveForm";
 import Link from "next/link";
 
-const faucet = "https://faucet.buildbear.io/acute-grievous-8fc11010"
+const faucet = "https://faucet.buildbear.io/annual-ben-quadinaros-8342b10b"
 
 export default function Swap() {
     return (
