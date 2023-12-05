@@ -1,6 +1,7 @@
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { getDefaultWallets } from "@rainbow-me/rainbowkit";
+import { getDefaultWallets, connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { injectedWallet, trustWallet, rabbyWallet } from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public"
 import { mainnet } from "wagmi/chains";
@@ -23,8 +24,19 @@ const { connectors } = getDefaultWallets({
     chains,
 });
 
+const moreConnectors = connectorsForWallets([
+    {
+        groupName: 'More wallets',
+        wallets: [
+            injectedWallet({ chains }),
+            rabbyWallet({ chains }),
+            trustWallet({ projectId, chains }),
+        ],
+    },
+]);
+
 export const wagmiConfig = createConfig({
     autoConnect: true,
-    connectors,
+    connectors: () => [...connectors(), ...moreConnectors()],
     publicClient
 })
