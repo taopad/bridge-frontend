@@ -9,7 +9,7 @@ const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 function useBuyToken(amount: bigint, reset: () => void) {
     const { isConnected, address } = useAccount()
 
-    const deadline = BigInt(Math.floor(Date.now() / 1000))
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + (60 * 60 * 24))
 
     const { config } = usePrepareContractWrite({
         ...RouterContract,
