@@ -11,7 +11,7 @@ import { buildTestnet } from "./testnet";
 const chain = process.env.NEXT_PUBLIC_APP_ENV === "prod" ? mainnet : buildTestnet()
 
 // Beh project id
-const projectId = "cc0001030a2db410113db693aa39f465"
+const projectId = "031d4ad6ce63b830ab346fb92b96f328"
 
 // testnet config
 export const { chains, publicClient } = configureChains([chain], [
