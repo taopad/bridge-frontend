@@ -7,7 +7,7 @@ export function Navbar() {
         <div className="flex">
             <div>
                 <Link href="/" className="block relative w-48 h-16">
-                    <Image src="/TaoPadLogo-NoBG.png" alt="TaoPad" fill sizes="1" style={{ objectFit: "contain" }} />
+                    <Image src="/TaoPadLogo.png" alt="TaoPad" fill sizes="1" style={{ objectFit: "contain" }} />
                 </Link>
             </div>
             <div className="w-full py-4 flex items-center justify-end">
