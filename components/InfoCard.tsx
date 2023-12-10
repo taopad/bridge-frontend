@@ -1,8 +1,9 @@
+import { Apr } from "@/components/Apr";
+import { TotalShares } from "@/components/TotalShares";
+import { NativeTokenSymbol } from "@/components/NativeTokenSymbol";
+import { RewardTokenSymbol } from "@/components/RewardTokenSymbol";
+import { TotalRewardDistributed } from "@/components/TotalRewardDistributed";
 import { NativeTokenContract } from "@/config/contracts";
-import { TotalShares } from "./TotalShares";
-import { NativeTokenSymbol } from "./NativeTokenSymbol";
-import { RewardTokenSymbol } from "./RewardTokenSymbol";
-import { TotalRewardDistributed } from "./TotalRewardDistributed";
 
 export function InfoCard() {
     return (
@@ -23,6 +24,10 @@ export function InfoCard() {
             <div className="flex gap-2">
                 <div className="lg:w-48 text-right">Total distributed:</div>
                 <div><TotalRewardDistributed /> <RewardTokenSymbol /></div>
+            </div>
+            <div className="flex gap-2">
+                <div className="lg:w-48 text-right">Current apr:</div>
+                <div><Apr /></div>
             </div>
         </div>
     )
