@@ -6,8 +6,11 @@ export function useAppWatch() {
         contracts: [
             {
                 ...NativeTokenContract,
-                functionName: "balanceOf",
-                args: [NativeTokenContract.address],
+                functionName: "totalShares",
+            },
+            {
+                ...NativeTokenContract,
+                functionName: "totalRewardDistributed",
             },
             {
                 ...NativeTokenContract,
@@ -17,22 +20,13 @@ export function useAppWatch() {
                 ...NativeTokenContract,
                 functionName: "rewardBalance",
             },
-            {
-                ...NativeTokenContract,
-                functionName: "totalShares",
-            },
-            {
-                ...NativeTokenContract,
-                functionName: "totalRewardDistributed",
-            }
         ],
         watch: true,
         select: (data) => ({
-            collectedTax: data[0],
-            amountToSwapETH: data[1],
-            donations: data[2],
-            totalShares: data[3],
-            totalRewardDistributed: data[4],
+            totalShares: data[0],
+            totalRewardDistributed: data[1],
+            collectedTax: data[2],
+            donations: data[3],
         }),
     })
 }

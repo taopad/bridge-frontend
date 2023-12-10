@@ -5,12 +5,13 @@ import { useAppStatic } from "./useAppStatic";
 
 const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 
-export function useExpectedRewards() {
+export function useRewards() {
     const appWatch = useAppWatch()
     const appStatic = useAppStatic()
 
     const poolFee = appStatic.data?.poolFee.result ?? 0
-    const amountToSwapETH = appWatch.data?.amountToSwapETH.result ?? 0n
+    const collectedTax = appWatch.data?.collectedTax.result ?? 0n
+    const donations = appWatch.data?.donations.result ?? 0n
 
     return useContractRead({
         ...QuoterContract,
@@ -18,12 +19,16 @@ export function useExpectedRewards() {
         args: [{
             tokenIn: WETH,
             tokenOut: RewardTokenContract.address,
-            amountIn: amountToSwapETH,
+            amountIn: collectedTax,
             fee: poolFee,
             sqrtPriceLimitX96: 0n,
         }],
         watch: true,
-        enabled: appStatic.isSuccess && appWatch.isSuccess && amountToSwapETH > 0,
-        select: (data) => (data * 98n) / 100n, // allows 2% slippage
+        enabled: appStatic.isSuccess && poolFee > 0
+            && appWatch.isSuccess && collectedTax > 0,
+        select: (data) => ({
+            expected: (data * 98n) / 100n, // allow 2% slippage
+            total: data + donations,
+        }),
     })
 }

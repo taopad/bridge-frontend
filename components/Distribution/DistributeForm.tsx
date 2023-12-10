@@ -2,27 +2,22 @@
 
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
-import { useAppWatch } from "@/hooks/useAppWatch";
-import { useExpectedRewards } from "@/hooks/useExpectedRewards";
+import { useRewards } from "@/hooks/useRewards";
 import { Spinner } from "@/components/Spinner";
 
 function useDistribute() {
-    const appWatch = useAppWatch()
-    const expectedRewards = useExpectedRewards()
+    const rewards = useRewards()
 
-    const expected = expectedRewards.data ?? 0n
-    const donations = appWatch.data?.donations.result ?? 0n
-    const amountToSwap = appWatch.data?.amountToSwapETH ?? 0n
-
-    const onlyDonations = appWatch.isSuccess && amountToSwap === 0n && donations > 0
-    const expectedPriceQuoted = expectedRewards.isSuccess && expected > 0
-
+    const totalRewards = rewards.data?.total ?? 0n
+    const expectedRewards = rewards.data?.expected ?? 0n
 
     const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
         "functionName": "distribute",
-        args: [expected],
-        enabled: onlyDonations || expectedPriceQuoted
+        args: [expectedRewards],
+        // it is important rewards mustbe a success because we want to
+        // be sure expected rewards has been quoted.
+        enabled: rewards.isSuccess && totalRewards > 0
     })
 
     const action = useContractWrite(prepare.config)
@@ -35,13 +30,11 @@ function useDistribute() {
 export function DistributeForm() {
     const { prepare, action, wait } = useDistribute()
 
-    const appWatch = useAppWatch()
-    const expectedRewards = useExpectedRewards()
+    const rewards = useRewards()
 
-    const expected = expectedRewards.data ?? 0n
-    const donations = appWatch.data?.donations.result ?? 0n
+    const totalRewards = rewards.data?.total ?? 0n
 
-    const hasRewards = (expected + donations) > 0
+    const hasRewards = rewards.isSuccess && totalRewards > 0
 
     const loading = prepare.isLoading || action.isLoading || wait.isLoading
     const disabled = loading || !hasRewards || !action.write
