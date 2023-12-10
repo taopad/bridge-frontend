@@ -15,9 +15,12 @@ export function useApr() {
     const blockNumber = useBlockNumber()
 
     const poolFee = appStatic.data?.poolFee.result ?? 0
+    const rewardDecimal = appStatic.data?.tokens.reward.decimals.result ?? 0
+
     const totalShares = appWatch.data?.totalShares.result ?? 0n
     const ethCollected = appWatch.data?.collectedTax.result ?? 0n
-    const totalRewardDistributed = appWatch.data?.totalRewardDistributed.result ?? 0n
+    const rewardDonations = appWatch.data?.donations.result ?? 0n
+    const rewardDistributed = appWatch.data?.totalRewardDistributed.result ?? 0n
 
     return useContractReads({
         contracts: [
@@ -36,7 +39,7 @@ export function useApr() {
                 args: [{
                     tokenIn: RewardTokenContract.address,
                     tokenOut: WETH,
-                    amountIn: totalRewardDistributed,
+                    amountIn: 10n ** BigInt(rewardDecimal),
                     fee: poolFee,
                     sqrtPriceLimitX96: 0n,
                 }],
@@ -47,12 +50,12 @@ export function useApr() {
                 args: [totalShares, [NativeTokenContract.address, WETH, USDC]],
             },
         ],
-        enabled: appWatch.isSuccess && totalRewardDistributed > 0 && poolFee > 0 && totalShares > 0,
+        enabled: appWatch.isSuccess && rewardDecimal > 0 && poolFee > 0 && totalShares > 0,
         select: (data) => {
             const currentBlockNumber = blockNumber.data ?? 0n
             const startBlock = data[0].result ?? 0n
-            const ethPrice = data[1].result?.[1] ?? 0n
-            const ethDistributed = data[2].result ?? 0n
+            const ethUsdcPrice = data[1].result?.[1] ?? 0n
+            const rewardEthPrice = data[2].result ?? 0n
             const totalUsdcLocked = data[3].result?.[2] ?? 0n
 
             if (totalUsdcLocked === 0n) return 0
@@ -60,7 +63,9 @@ export function useApr() {
             if (currentBlockNumber < startBlock) return 0
 
             const elapsedBlocks = currentBlockNumber - startBlock
-            const usdcDistributed = (ethCollected + ethDistributed) * ethPrice
+            const ethDonated = rewardDonations * rewardEthPrice
+            const ethDistributed = rewardDistributed * rewardEthPrice
+            const usdcDistributed = (ethCollected + ethDonated + ethDistributed) * ethUsdcPrice
             const usdcPerBlock = usdcDistributed / elapsedBlocks
             const usdcPerYear = usdcPerBlock * blocksPerDay * 365n
 
