@@ -1,4 +1,4 @@
-import NativeTokenAbi from "./abi/ERC20Rewards";
+import NativeTokenAbi from "./abi/NativeToken";
 import RewardTokenAbi from "./abi/IERC20Metadata";
 import IUniswapV2RouterAbi from "./abi/IUniswapV2Router02";
 import IQuoterAbi from "./abi/IQuoter";

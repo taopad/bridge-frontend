@@ -1,19 +1,22 @@
 "use client";
 
-import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
+import { useAccount, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { NativeTokenContract } from "@/config/contracts";
 import { useUserWatch } from "@/hooks/useUserWatch";
 import { Spinner } from "@/components/Spinner";
 
 function useClaim() {
     const userWatch = useUserWatch()
+    const { isConnected, address } = useAccount()
 
     const rewards = userWatch.data?.rewards.result ?? 0n
 
     const prepare = usePrepareContractWrite({
         ...NativeTokenContract,
         "functionName": "claim",
-        enabled: rewards > 0
+        args: [address ?? "0x"],
+        scopeKey: address,
+        enabled: isConnected && rewards > 0
     })
 
     const action = useContractWrite(prepare.config)

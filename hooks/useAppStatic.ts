@@ -36,6 +36,10 @@ export function useAppStatic() {
                 ...RewardTokenContract,
                 functionName: "decimals",
             },
+            {
+                ...NativeTokenContract,
+                functionName: "startBlock",
+            },
         ],
         select: (data) => ({
             buyFee: data[0],
@@ -52,6 +56,7 @@ export function useAppStatic() {
                     decimals: data[7],
                 },
             },
+            startBlock: data[8],
         })
     })
 }

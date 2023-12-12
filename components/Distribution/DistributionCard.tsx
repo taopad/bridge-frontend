@@ -1,7 +1,7 @@
 import { RewardTokenSymbol } from "@/components/RewardTokenSymbol";
 import { BuyFee } from "./BuyFee";
 import { SellFee } from "./SellFee";
-import { RewardAmount } from "./RewardAmount";
+import { RewardBalance } from "./RewardBalance";
 import { DistributeForm } from "./DistributeForm";
 
 export function DistributionCard() {
@@ -23,7 +23,7 @@ export function DistributionCard() {
                     <div>
                         <div className="text-right">
                             <span className="amount">
-                                <RewardAmount />
+                                <RewardBalance />
                             </span> <RewardTokenSymbol />
                         </div>
                         <div className="hidden lg:inline">Collected rewards</div>
