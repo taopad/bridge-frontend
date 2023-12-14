@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -25,9 +24,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <WalletProvider>
                     <div className="container mx-auto mt-4 px-2">
                         <Navbar />
-                    </div>
-                    <div className="relative w-48 h-48 mx-auto">
-                        <Image src="/Tao3D.png" alt="Taopad" fill sizes="1" style={{ objectFit: "cover" }} />
                     </div>
                     <div className="flex justify-center my-10">
                         <Link href={buyLink} target="_blank">Buy <NativeTokenSymbol /></Link>
