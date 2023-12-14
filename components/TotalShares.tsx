@@ -4,6 +4,7 @@ import { formatUnits } from "viem";
 import { useAppWatch } from "@/hooks/useAppWatch";
 import { useAppStatic } from "@/hooks/useAppStatic";
 import { useHasMounted } from "@/hooks/useHasMounted";
+import { formatAmount } from "@/utils/formatAmount";
 
 export function TotalShares() {
     const appWatch = useAppWatch()
@@ -15,7 +16,7 @@ export function TotalShares() {
     const units = formatUnits(totalShares, decimals);
 
     if (hasMounted) {
-        return <span title={units}>{parseFloat(units).toFixed(2)}</span>
+        return <span title={units}>{formatAmount(units)}</span>
     }
 
     return null
