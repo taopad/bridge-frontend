@@ -2,7 +2,7 @@ export function formatAmount(str: string) {
     const n = parseFloat(str)
 
     if (n == 0) {
-        return 0
+        return "0"
     }
 
     if (n >= 100000) {

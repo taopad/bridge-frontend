@@ -16,7 +16,7 @@ export function TotalShares() {
     const units = formatUnits(totalShares, decimals);
 
     if (hasMounted) {
-        return <span title={units}>{formatAmount(units)}</span>
+        return <span title={units}>{parseFloat(formatAmount(units)).toLocaleString("en-US")}</span>
     }
 
     return null
