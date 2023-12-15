@@ -1,6 +1,5 @@
 "use client";
 
-import { parseEther } from "viem";
 import { useBlockNumber } from "wagmi";
 import { useAppWatch } from "@/hooks/useAppWatch";
 import { useAppStatic } from "@/hooks/useAppStatic";
@@ -45,7 +44,7 @@ export function Apr() {
     const totalEth = collectedTaxEth + emittedRewardsEth + totalRewardDistributedEth
 
     // compute the apr.
-    const apr = (totalEth * blocksPerDay * 365n) / (totalSharesEth * elapsedBlocks)
+    const apr = (totalEth * blocksPerDay * 365n * 100n) / (totalSharesEth * elapsedBlocks)
 
     if (hasMounted) {
         return <span>{apr.toString()}%</span>
