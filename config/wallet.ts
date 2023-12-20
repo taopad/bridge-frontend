@@ -4,6 +4,8 @@ import { getDefaultWallets, connectorsForWallets } from "@rainbow-me/rainbowkit"
 import { injectedWallet, trustWallet, rabbyWallet } from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public"
+import { alchemyProvider } from "wagmi/providers/alchemy";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { mainnet } from "wagmi/chains";
 import { buildTestnet } from "./testnet";
 
@@ -15,6 +17,14 @@ const projectId = "031d4ad6ce63b830ab346fb92b96f328"
 
 // testnet config
 export const { chains, publicClient } = configureChains([chain], [
+    alchemyProvider({
+        apiKey: "-8vJw4VpKNykeiWXkz6Cj1Q8tyj8y2PK",
+    }),
+    jsonRpcProvider({
+        rpc: () => ({
+            http: 'https://rpc.ankr.com/eth',
+        }),
+    }),
     publicProvider(),
 ]);
 
