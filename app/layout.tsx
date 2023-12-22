@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import localFont from "next/font/local";
 import "./globals.css";
 
 import { Navbar } from "@/components/Navbar";
 import { WalletProvider } from "@/components/WalletProvider";
+import { TargetChainProvider } from "@/components/TargetChainProvider";
 
 const myFont = localFont({ src: "./RocGroteskWideMedium.otf" })
 
@@ -18,12 +18,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body className={`text-white ${myFont.className}`} style={{ backgroundImage: "url('/TaoBG20.jpg')" }}>
                 <WalletProvider>
-                    <div className="container mx-auto mt-4 px-2">
-                        <Navbar />
-                    </div>
-                    <div className="max-w-[1024px] mx-auto mb-[120px] px-2">
-                        {children}
-                    </div>
+                    <TargetChainProvider>
+                        <div className="container mx-auto mt-4 px-2">
+                            <Navbar />
+                        </div>
+                        <div className="max-w-[1024px] mx-auto mb-[120px] px-2">
+                            {children}
+                        </div>
+                    </TargetChainProvider>
                 </WalletProvider>
             </body>
         </html>

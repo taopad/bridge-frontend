@@ -1,7 +1,11 @@
-import { SupportedChainId, info } from "@/config/chains";
+import { useContext } from "react";
+import { info } from "@/config/chains";
+import { TargetChainContext } from "@/components/TargetChainProvider";
 
-export function useTargetChainInfo(id: SupportedChainId | undefined) {
-    const selected = id ? info[id] : undefined
+export function useTargetChainInfo() {
+    const { targetChainId } = useContext(TargetChainContext)
 
-    return { id, info: selected }
+    const selected = targetChainId ? info[targetChainId] : undefined
+
+    return { targetChainId, info: selected }
 }

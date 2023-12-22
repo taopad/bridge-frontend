@@ -8,14 +8,14 @@ export function NetworkCard() {
         <div className="card flex flex-col gap-4">
             <h2>Chain selection</h2>
             <div className="flex flex-col gap-4 lg:flex-row">
-                <SourceChainButton />
-                <TargetChainSelector />
-            </div>
-            <div className="text-right">
-                <SourceBalance />
-            </div>
-            <div className="text-right">
-                <TargetBalance chainId={42161} />
+                <div className="flex flex-col gap-4 flex-1 text-center">
+                    <SourceChainButton />
+                    <SourceBalance />
+                </div>
+                <div className="flex flex-col gap-4 flex-1 text-center">
+                    <TargetChainSelector />
+                    <TargetBalance />
+                </div>
             </div>
         </div>
     )

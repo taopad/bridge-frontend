@@ -1,18 +1,21 @@
 "use client";
 
+import { useAccount } from "wagmi";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useTargetBalance } from "@/hooks/useTargetBalance";
-import { useTargetChainInfo } from "@/hooks/useTargetChainInfo";
-import { SupportedChainId } from "@/config/chains";
 
-export function TargetBalance({ chainId }: { chainId: SupportedChainId | undefined }) {
-    const chain = useTargetChainInfo(chainId)
-    const balance = useTargetBalance(chainId)
+export function TargetBalance() {
+    const { isConnected } = useAccount()
+    const balance = useTargetBalance()
     const hasMounted = useHasMounted()
 
-    if (hasMounted && balance.isSuccess && balance.data && chain.info) {
-        return <span>{balance.data.formatted} ${balance.data.symbol} on {chain.info.name}</span>
+    if (!hasMounted) return <span>-</span>
+
+    if (!isConnected) return <span>Wallet not connected</span>
+
+    if (balance.isSuccess && balance.data) {
+        return <span>{balance.data.formatted} ${balance.data.symbol}</span>
     }
 
-    return null
+    return <span>No target chain selected</span>
 }

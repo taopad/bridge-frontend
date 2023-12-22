@@ -3,8 +3,8 @@ import { chains } from "./wallet";
 export type SupportedChainId = typeof chains[number]["id"]
 
 export type ChainConfig = {
-    name: string,
-    logo: string,
+    name: string
+    logo: string
 }
 
 export const info: Record<SupportedChainId, ChainConfig> = {

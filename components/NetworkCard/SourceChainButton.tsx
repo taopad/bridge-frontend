@@ -33,7 +33,7 @@ export function SourceChainButton() {
 
     return (
         <button className="btn-chain flex items-center" onClick={openChainModal}>
-            <img className="h-8 w-8" src={`/logos/${logo}.svg`} alt={name} />
+            <img className="h-6 w-6" src={`/logos/${logo}.svg`} alt={name} />
             <div className="flex-1">{name}</div>
         </button>
     )
@@ -42,7 +42,7 @@ export function SourceChainButton() {
 function FallbackButton() {
     return (
         <button className="btn-chain" disabled={true}>
-            <div className="w-16 h-5"></div>
+            <div className="h-6">&nbsp;</div>
         </button>
     )
 }
