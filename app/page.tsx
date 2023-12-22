@@ -1,4 +1,4 @@
-import { NetworkCard } from "@/components/Network/NetworkCard";
+import { NetworkCard } from "@/components/NetworkCard/NetworkCard";
 
 export default function Home() {
     return (
