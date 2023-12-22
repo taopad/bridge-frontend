@@ -17,7 +17,7 @@ export function TargetChainSelector() {
         if (id === value) {
             setTargetChainId(undefined)
         }
-    }, [id, value])
+    }, [id, value, setTargetChainId])
 
     return (
         <select
