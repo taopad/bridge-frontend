@@ -7,5 +7,5 @@ export function useTargetChainInfo() {
 
     const selected = targetChainId ? info[targetChainId] : undefined
 
-    return { targetChainId, info: selected }
+    return { id: targetChainId, info: selected }
 }

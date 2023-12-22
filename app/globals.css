@@ -18,7 +18,7 @@ body {}
     }
 
     .card-button {
-        @apply w-full p-2 rounded-lg text-black bg-white text-lg lg:min-w-[80px] lg:h-[80px] hover:bg-slate-200 disabled:bg-slate-300
+        @apply w-full p-2 rounded-lg text-black bg-white text-lg hover:bg-slate-200 disabled:bg-slate-300
     }
 
     .btn-wallet {
