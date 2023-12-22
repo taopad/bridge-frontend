@@ -13,6 +13,6 @@ export function Navbar() {
             <div className="w-full py-4 flex items-center justify-end">
                 <ConnectButton />
             </div>
-        </div >
+        </div>
     )
 }
