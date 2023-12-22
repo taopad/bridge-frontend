@@ -24,4 +24,8 @@ body {}
     .btn-wallet {
         @apply px-4 py-1 bg-black border border-white rounded-full
     }
+
+    .btn-chain {
+        @apply p-5 bg-white text-black border flex-1
+    }
 }

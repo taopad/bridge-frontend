@@ -5,17 +5,13 @@ import "./globals.css";
 
 import { Navbar } from "@/components/Navbar";
 import { WalletProvider } from "@/components/WalletProvider";
-import { NativeTokenSymbol } from "@/components/NativeTokenSymbol";
-import { NativeTokenContract } from "@/config/contracts";
 
 const myFont = localFont({ src: "./RocGroteskWideMedium.otf" })
 
 export const metadata: Metadata = {
-    title: 'TaoPad',
-    description: 'TaoPad app',
+    title: 'TaoPad bridge',
+    description: 'TaoPad bridge for wTao',
 }
-
-const buyLink = `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${NativeTokenContract.address}`
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -24,9 +20,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <WalletProvider>
                     <div className="container mx-auto mt-4 px-2">
                         <Navbar />
-                    </div>
-                    <div className="flex justify-center my-10">
-                        <Link href={buyLink} target="_blank">Buy <NativeTokenSymbol /></Link>
                     </div>
                     <div className="max-w-[1024px] mx-auto mb-[120px] px-2">
                         {children}

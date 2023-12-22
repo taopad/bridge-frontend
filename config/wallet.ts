@@ -4,32 +4,19 @@ import { getDefaultWallets, connectorsForWallets } from "@rainbow-me/rainbowkit"
 import { injectedWallet, trustWallet, rabbyWallet } from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public"
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import { mainnet } from "wagmi/chains";
-import { buildTestnet } from "./testnet";
+import { mainnet, arbitrum } from "wagmi/chains";
 
 // select the chain
-const chain = process.env.NEXT_PUBLIC_APP_ENV === "prod" ? mainnet : buildTestnet()
+const sources = [mainnet, arbitrum]
 
 // Beh project id
-const projectId = "031d4ad6ce63b830ab346fb92b96f328"
+const projectId = "837b08b6b8d6605f4240190ca6624fa5"
 
 // testnet config
-export const { chains, publicClient } = configureChains([chain], [
-    alchemyProvider({
-        apiKey: "-8vJw4VpKNykeiWXkz6Cj1Q8tyj8y2PK",
-    }),
-    jsonRpcProvider({
-        rpc: () => ({
-            http: 'https://rpc.ankr.com/eth',
-        }),
-    }),
-    publicProvider(),
-]);
+export const { chains, publicClient } = configureChains(sources, [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
-    appName: "TaoPad",
+    appName: "TaoPad wTao bridge",
     projectId,
     chains,
 });
