@@ -2,17 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body {}
-
 @layer components {
-    input[type=number] {
-        @apply text-black
-    }
-
-    .amount {
-        @apply text-[48px]
-    }
-
     .card {
         @apply flex-1 px-8 py-4 bg-black border border-white rounded-[36px]
     }
