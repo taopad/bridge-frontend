@@ -4,6 +4,7 @@ import { formatUnits } from "viem";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance";
 import { useEstimateSendFee } from "@/hooks/useEstimateSendFee";
+import { formatAmount } from "@/utils/formatAmount";
 
 export function SourceNativeFee({ amount }: { amount: bigint }) {
     const fee = useEstimateSendFee(amount)
@@ -23,8 +24,4 @@ export function SourceNativeFee({ amount }: { amount: bigint }) {
     }
 
     return <span>-</span>
-}
-
-export function formatAmount(amount: string) {
-    return parseFloat(amount).toFixed(5).toString()
 }

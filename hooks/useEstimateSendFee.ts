@@ -10,6 +10,7 @@ export function useEstimateSendFee(amount: bigint) {
     const { address } = useAccount()
 
     const targetLzId = targetChainInfo ? targetChainInfo.lzId : 0
+    const adapterParams = targetChainInfo ? targetChainInfo.adapterParams : "0x"
 
     const sourceContract = getOftContract(sourceChainId)
 
@@ -18,7 +19,7 @@ export function useEstimateSendFee(amount: bigint) {
     return useContractRead({
         ...sourceContract,
         functionName: "estimateSendFee",
-        args: [targetLzId, address32Bytes, amount, false, "0x"],
+        args: [targetLzId, address32Bytes, amount, false, adapterParams],
         scopeKey: address,
         enabled: sourceChainId != undefined
             && targetChainInfo != undefined

@@ -1,49 +1,37 @@
 "use client";
 
-import { Spinner } from "@/components/Spinner";
-import { useDebounce } from "@/hooks/useDebounce";
+import { pad } from "viem";
+import { useAllowance } from "@/hooks/useAllowance";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useBigintInput } from "@/hooks/useBigintInput";
-import { useSourceChainInfo } from "@/hooks/useSourceChainInfo";
+import { useSourceChainId } from "@/hooks/useSourceChainId";
+import { useEstimateSendFee } from "@/hooks/useEstimateSendFee";
 import { useTargetChainInfo } from "@/hooks/useTargetChainInfo";
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance";
-import { useAccount, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
+import { useTargetTokenBalance } from "@/hooks/useTargetTokenBalance";
+import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance";
+import { useAccount, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { getTokenContract, getOftContract } from "@/config/contracts";
+import { Spinner } from "@/components/Spinner";
 import { SourceNativeFee } from "./SourceNativeFee";
 import { SourceNativeBalance } from "./SourceNativeBalance";
 
-function useAllowance() {
-    const { id } = useSourceChainInfo()
-    const { isConnected, address } = useAccount()
-
-    const oft = getOftContract(id)
-    const token = getTokenContract(id)
-
-    return useContractRead({
-        ...token,
-        functionName: "allowance",
-        args: [address ?? "0x", oft.address ?? "0x"],
-        scopeKey: address,
-        enabled: isConnected,
-    })
-}
+const nullAddress = "0x0000000000000000000000000000000000000000"
 
 function useApprove() {
-    const { id } = useSourceChainInfo()
-    const { isConnected, address } = useAccount()
     const allowance = useAllowance()
+    const sourceChainId = useSourceChainId()
+    const { isConnected, address } = useAccount()
 
-    const oft = getOftContract(id)
-    const token = getTokenContract(id)
+    const oft = getOftContract(sourceChainId)
+    const token = getTokenContract(sourceChainId)
 
     const prepare = usePrepareContractWrite({
         ...token,
         functionName: "approve",
         args: [oft.address ?? "0x", BigInt(2 ** (256 - 1))],
         scopeKey: address,
-        enabled: isConnected
-            && oft.address != undefined
-            && token.address != undefined,
+        enabled: isConnected && sourceChainId != undefined
     })
 
     const action = useContractWrite(prepare.config)
@@ -57,40 +45,59 @@ function useApprove() {
     return { prepare, action, wait }
 }
 
-//function useStake(amount: bigint, reset: () => void) {
-//    const { id } = useSourceChainInfo()
-//    const { isConnected, address } = useAccount()
-//
-//    const allowance = useAllowance()
-//    const sourceBalance = useSourceTokenBalance()
-//    const targetBalance = useTargetTokenBalance()
-//
-//    const oft = getOftContract(id)
-//
-//    const prepare = usePrepareContractWrite({
-//        ...oft,
-//        functionName: "sendFrom",
-//        args: [],
-//        scopeKey: address,
-//        enabled: isConnected
-//            && oft.address != undefined
-//            && amount > 0
-//            && amount <= (sourceBalance.data?.value ?? 0n)
-//            && amount <= (allowance.data ?? 0n),
-//    })
-//
-//    const action = useContractWrite(prepare.config)
-//
-//    const wait = useWaitForTransaction({
-//        hash: action.data?.hash, onSuccess() {
-//            reset()
-//            sourceBalance.refetch()
-//            targetBalance.refetch()
-//        }
-//    })
-//
-//    return { prepare, action, wait }
-//}
+function useBridge(amount: bigint, reset: () => void) {
+    const allowance = useAllowance()
+    const sourceChainId = useSourceChainId()
+    const { info: targetChainInfo } = useTargetChainInfo()
+    const { isConnected, address } = useAccount()
+
+    const fee = useEstimateSendFee(amount)
+    const sourceTokenBalance = useSourceTokenBalance()
+    const targetTokenBalance = useTargetTokenBalance()
+    const sourceNativeBalance = useSourceNativeBalance()
+
+    const address32Bytes = address ? pad(address) : "0x";
+    const targetLzId = targetChainInfo ? targetChainInfo.lzId : 0
+    const adapterParams = targetChainInfo ? targetChainInfo.adapterParams : "0x"
+
+    const oft = getOftContract(sourceChainId)
+
+    const prepare = usePrepareContractWrite({
+        ...oft,
+        functionName: "sendFrom",
+        args: [address ?? "0x", targetLzId, address32Bytes, amount, {
+            refundAddress: address ?? "0x",
+            zroPaymentAddress: nullAddress,
+            adapterParams: adapterParams,
+        }],
+        value: fee.data ?? 0n,
+        scopeKey: address,
+        enabled: isConnected
+            && allowance.isSuccess
+            && sourceTokenBalance.isSuccess
+            && sourceNativeBalance.isSuccess
+            && fee.isSuccess
+            && sourceChainId != undefined
+            && targetChainInfo != undefined
+            && (sourceNativeBalance.data?.value ?? 0n) > (fee.data ?? 0n)
+            && amount > 0
+            && amount <= (sourceTokenBalance.data?.value ?? 0n)
+            && amount <= (allowance.data ?? 0n),
+    })
+
+    const action = useContractWrite(prepare.config)
+
+    const wait = useWaitForTransaction({
+        hash: action.data?.hash, onSuccess() {
+            reset()
+            sourceTokenBalance.refetch()
+            targetTokenBalance.refetch()
+            sourceNativeBalance.refetch()
+        }
+    })
+
+    return { prepare, action, wait }
+}
 
 export function BridgeForm() {
     const { data } = useSourceTokenBalance()
@@ -141,12 +148,21 @@ function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
 function SubmitButton({ amount, reset }: { amount: bigint, reset: () => void }) {
     const allowance = useAllowance()
     const hasMounted = useHasMounted()
-    const { data, isSuccess } = useSourceTokenBalance()
+    const fee = useEstimateSendFee(amount)
+    const sourceTokenBalance = useSourceTokenBalance()
+    const sourceNativeBalance = useSourceNativeBalance()
 
-    const insufficientBalance = amount > (data?.value ?? 0n)
+    const insufficientTokenBalance = amount > (sourceTokenBalance.data?.value ?? 0n)
+    const insufficientNativeBalance = (fee.data ?? 0n) >= (sourceNativeBalance.data?.value ?? 0n)
     const insufficientAllowance = amount > (allowance.data ?? 0n)
 
-    if (!hasMounted || !isSuccess) {
+    const loaded = hasMounted
+        && fee.isSuccess
+        && sourceTokenBalance.isSuccess
+        && sourceNativeBalance.isSuccess
+        && amount > 0
+
+    if (!loaded) {
         return (
             <button disabled className="card-button w-full h-full lg:w-48">
                 Bridge
@@ -154,7 +170,15 @@ function SubmitButton({ amount, reset }: { amount: bigint, reset: () => void }) 
         )
     }
 
-    if (insufficientBalance) {
+    if (insufficientTokenBalance) {
+        return (
+            <button disabled className="card-button w-full h-full lg:w-48">
+                Ins. balance
+            </button>
+        )
+    }
+
+    if (insufficientNativeBalance) {
         return (
             <button disabled className="card-button w-full h-full lg:w-48">
                 Ins. balance
@@ -166,7 +190,7 @@ function SubmitButton({ amount, reset }: { amount: bigint, reset: () => void }) 
         return <ApproveButton />
     }
 
-    return <StakeButton amount={amount} reset={reset} />
+    return <BridgeButton amount={amount} reset={reset} />
 }
 
 function ApproveButton() {
@@ -178,38 +202,21 @@ function ApproveButton() {
 
     return (
         <button disabled={disabled} onClick={() => action.write?.()} className="card-button w-full h-full lg:w-48">
-            <Spinner enabled={sending} /> <span>Approve</span>
+            {sending ? <Spinner /> : <span>Approve</span>}
         </button>
     )
 }
 
-function StakeButton({ amount, reset }: { amount: bigint, reset: () => void }) {
-    const source = useSourceChainInfo()
-    const target = useTargetChainInfo()
-    //    const [debouncedAmount, debouncing] = useDebounce(amount)
-    //    const { prepare, action, wait } = useStake(debouncedAmount, reset)
+function BridgeButton({ amount, reset }: { amount: bigint, reset: () => void }) {
+    const { prepare, action, wait } = useBridge(amount, reset)
 
-    const zeroAmount = amount === 0n
-
-    const disabled = zeroAmount || !source.id || !target.id
-
-    //    const preparing = prepare.isLoading || prepare.isError || !action.write
-    //    const sending = action.isLoading || wait.isLoading
-    //    const disabled = zeroAmount || preparing || sending || debouncing
-    //
-    //    return (
-    //        <button disabled={disabled} onClick={() => action.write?.()} className="card-button w-full h-full lg:w-48">
-    //            <Spinner enabled={sending} /> <span>Bridge</span>
-    //        </button>
-    //    )
+    const preparing = prepare.isLoading || prepare.isError || !action.write
+    const sending = action.isLoading || wait.isLoading
+    const disabled = preparing || sending
 
     return (
-        <button
-            className="card-button w-full h-full lg:w-48"
-            onClick={() => alert(amount.toString())}
-            disabled={disabled}
-        >
-            Bridge
+        <button disabled={disabled} onClick={() => action.write?.()} className="card-button w-full h-full lg:w-48">
+            {sending ? <Spinner /> : <span>Bridge</span>}
         </button>
     )
 }
