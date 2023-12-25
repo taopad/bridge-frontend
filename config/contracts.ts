@@ -1,5 +1,4 @@
 import OftV2Abi from "./abi/OftV2";
-import OftV2ProxyAbi from "./abi/OftV2Proxy";
 import IERC20MetadataAbi from "./abi/IERC20Metadata";
 import { SupportedChainId } from "./chains";
 
@@ -13,7 +12,7 @@ type TokenContract = {
 }
 
 type OftContract = {
-    abi: typeof OftV2ProxyAbi | typeof OftV2Abi,
+    abi: typeof OftV2Abi,
     address: `0x${string}`
 }
 
@@ -30,7 +29,7 @@ const TokenContracts: Record<SupportedChainId, TokenContract> = {
 
 const OftContracts: Record<SupportedChainId, OftContract> = {
     [1]: {
-        abi: OftV2ProxyAbi,
+        abi: OftV2Abi,
         address: process.env.NEXT_PUBLIC_PROXY_ADDRESS as `0x${string}`,
     },
     [42161]: {

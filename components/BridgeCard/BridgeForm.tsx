@@ -9,6 +9,7 @@ import { useTargetChainInfo } from "@/hooks/useTargetChainInfo";
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance";
 import { useAccount, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { getTokenContract, getOftContract } from "@/config/contracts";
+import { SourceNativeFee } from "./SourceNativeFee";
 import { SourceNativeBalance } from "./SourceNativeBalance";
 
 function useAllowance() {
@@ -114,8 +115,9 @@ export function BridgeForm() {
                     <SubmitButton amount={amount.value} reset={amount.reset} />
                 </div>
             </div>
-            <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="flex flex-col gap-4 justify-between lg:flex-row">
                 <SourceNativeBalance />
+                <SourceNativeFee amount={amount.value} />
             </div>
         </div>
     )
