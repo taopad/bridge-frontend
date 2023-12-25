@@ -4,12 +4,12 @@ import { Spinner } from "@/components/Spinner";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useBigintInput } from "@/hooks/useBigintInput";
-import { useSourceBalance } from "@/hooks/useSourceBalance";
-import { useTargetBalance } from "@/hooks/useTargetBalance";
 import { useSourceChainInfo } from "@/hooks/useSourceChainInfo";
 import { useTargetChainInfo } from "@/hooks/useTargetChainInfo";
+import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance";
 import { useAccount, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { getTokenContract, getOftContract } from "@/config/contracts";
+import { SourceNativeBalance } from "./SourceNativeBalance";
 
 function useAllowance() {
     const { id } = useSourceChainInfo()
@@ -61,8 +61,8 @@ function useApprove() {
 //    const { isConnected, address } = useAccount()
 //
 //    const allowance = useAllowance()
-//    const sourceBalance = useSourceBalance()
-//    const targetBalance = useTargetBalance()
+//    const sourceBalance = useSourceTokenBalance()
+//    const targetBalance = useTargetTokenBalance()
 //
 //    const oft = getOftContract(id)
 //
@@ -92,25 +92,30 @@ function useApprove() {
 //}
 
 export function BridgeForm() {
-    const { data } = useSourceBalance()
+    const { data } = useSourceTokenBalance()
 
     const amount = useBigintInput(0n, data?.decimals ?? 0)
 
     return (
-        <div className="flex flex-col gap-4 lg:flex-row">
-            <div className="form-control flex-1">
-                <div className="flex gap-1">
-                    <input
-                        type="text"
-                        className="px-6 py-4 text-lg text-black w-full rounded-lg"
-                        value={amount.valueStr}
-                        onChange={e => amount.setValueStr(e.target.value.trim())}
-                    />
-                    <MaxButton setAmount={amount.setValue} />
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 lg:flex-row">
+                <div className="form-control flex-1">
+                    <div className="flex gap-1">
+                        <input
+                            type="text"
+                            className="px-6 py-4 text-lg text-black w-full rounded-lg"
+                            value={amount.valueStr}
+                            onChange={e => amount.setValueStr(e.target.value.trim())}
+                        />
+                        <MaxButton setAmount={amount.setValue} />
+                    </div>
+                </div>
+                <div>
+                    <SubmitButton amount={amount.value} reset={amount.reset} />
                 </div>
             </div>
-            <div>
-                <SubmitButton amount={amount.value} reset={amount.reset} />
+            <div className="flex flex-col gap-4 lg:flex-row">
+                <SourceNativeBalance />
             </div>
         </div>
     )
@@ -118,7 +123,7 @@ export function BridgeForm() {
 
 function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
     const hasMounted = useHasMounted()
-    const { data, isSuccess } = useSourceBalance()
+    const { data, isSuccess } = useSourceTokenBalance()
 
     const balance = data?.value ?? 0n
 
@@ -134,7 +139,7 @@ function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
 function SubmitButton({ amount, reset }: { amount: bigint, reset: () => void }) {
     const allowance = useAllowance()
     const hasMounted = useHasMounted()
-    const { data, isSuccess } = useSourceBalance()
+    const { data, isSuccess } = useSourceTokenBalance()
 
     const insufficientBalance = amount > (data?.value ?? 0n)
     const insufficientAllowance = amount > (allowance.data ?? 0n)

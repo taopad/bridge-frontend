@@ -1,10 +1,10 @@
 "use client";
 
 import { useHasMounted } from "@/hooks/useHasMounted";
-import { useSourceBalance } from "@/hooks/useSourceBalance";
+import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance";
 
-export function SourceBalance() {
-    const balance = useSourceBalance()
+export function SourceTokenBalance() {
+    const balance = useSourceTokenBalance()
     const hasMounted = useHasMounted()
 
     if (!hasMounted) return <span>-</span>

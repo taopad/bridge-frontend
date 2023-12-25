@@ -2,11 +2,11 @@
 
 import { useAccount } from "wagmi";
 import { useHasMounted } from "@/hooks/useHasMounted";
-import { useTargetBalance } from "@/hooks/useTargetBalance";
+import { useTargetTokenBalance } from "@/hooks/useTargetTokenBalance";
 
-export function TargetBalance() {
+export function TargetTokenBalance() {
     const { isConnected } = useAccount()
-    const balance = useTargetBalance()
+    const balance = useTargetTokenBalance()
     const hasMounted = useHasMounted()
 
     if (!hasMounted) return <span>-</span>

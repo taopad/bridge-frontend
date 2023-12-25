@@ -1,5 +1,5 @@
-import { SourceBalance } from "./SourceBalance";
-import { TargetBalance } from "./TargetBalance";
+import { SourceTokenBalance } from "./SourceTokenBalance";
+import { TargetTokenBalance } from "./TargetTokenBalance";
 import { SourceChainButton } from "./SourceChainButton";
 import { TargetChainSelector } from "./TargetChainSelector";
 
@@ -10,11 +10,11 @@ export function NetworkCard() {
             <div className="flex flex-col gap-4 lg:flex-row">
                 <div className="flex flex-col gap-4 flex-1 text-center">
                     <SourceChainButton />
-                    <SourceBalance />
+                    <SourceTokenBalance />
                 </div>
                 <div className="flex flex-col gap-4 flex-1 text-center">
                     <TargetChainSelector />
-                    <TargetBalance />
+                    <TargetTokenBalance />
                 </div>
             </div>
         </div>
