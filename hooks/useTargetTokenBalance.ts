@@ -12,5 +12,5 @@ export function useTargetTokenBalance() {
 
     const enabled = isConnected && chainId != undefined
 
-    return useBalance({ chainId, address, token, enabled, scopeKey: address });
+    return useBalance({ chainId, address, token, enabled, scopeKey: address, watch: true });
 }
