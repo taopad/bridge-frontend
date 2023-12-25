@@ -1,13 +1,14 @@
-import { useContext } from "react";
 import { useAccount, useBalance } from "wagmi";
-import { TokenContracts } from "@/config/contracts";
-import { TargetChainContext } from "@/components/TargetChainProvider";
+import { getTokenContract } from "@/config/contracts";
+import { useTargetChainId } from "./useTargetChainId";
 
 export function useTargetTokenBalance() {
+    const chainId = useTargetChainId()
     const { isConnected, address } = useAccount()
-    const { targetChainId: chainId } = useContext(TargetChainContext)
 
-    const token = chainId ? TokenContracts[chainId].address : "0x0"
+    const contract = getTokenContract(chainId)
+
+    const token = contract.address ?? "0x0"
 
     const enabled = isConnected && chainId != undefined
 

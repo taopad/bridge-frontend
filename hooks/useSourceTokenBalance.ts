@@ -1,14 +1,14 @@
-import { useNetwork, useAccount, useBalance } from "wagmi";
-import { TokenContracts } from "@/config/contracts";
-import { SupportedChainId } from "@/config/chains";
+import { useAccount, useBalance } from "wagmi";
+import { getTokenContract } from "@/config/contracts";
+import { useSourceChainId } from "./useSourceChainId";
 
 export function useSourceTokenBalance() {
-    const { chain } = useNetwork()
+    const chainId = useSourceChainId()
     const { isConnected, address } = useAccount()
 
-    const chainId = chain && !chain.unsupported ? chain.id as SupportedChainId : undefined
+    const contract = getTokenContract(chainId)
 
-    const token = chainId ? TokenContracts[chainId].address : "0x0"
+    const token = contract.address ?? "0x0"
 
     const enabled = isConnected && chainId != undefined
 

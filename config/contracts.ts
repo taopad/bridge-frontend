@@ -17,7 +17,7 @@ type OftContract = {
     address: `0x${string}`
 }
 
-export const TokenContracts: Record<SupportedChainId, TokenContract> = {
+const TokenContracts: Record<SupportedChainId, TokenContract> = {
     [1]: {
         abi: IERC20MetadataAbi,
         address: process.env.NEXT_PUBLIC_MAINNET_ADDRESS as `0x${string}`,
@@ -28,7 +28,7 @@ export const TokenContracts: Record<SupportedChainId, TokenContract> = {
     },
 }
 
-export const OftContracts: Record<SupportedChainId, OftContract> = {
+const OftContracts: Record<SupportedChainId, OftContract> = {
     [1]: {
         abi: OftV2ProxyAbi,
         address: process.env.NEXT_PUBLIC_PROXY_ADDRESS as `0x${string}`,

@@ -1,11 +1,10 @@
-import { useNetwork, useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { SupportedChainId } from "@/config/chains";
+import { useSourceChainId } from "./useSourceChainId";
 
 export function useSourceNativeBalance() {
-    const { chain } = useNetwork()
+    const chainId = useSourceChainId()
     const { isConnected, address } = useAccount()
-
-    const chainId = chain && !chain.unsupported ? chain.id as SupportedChainId : undefined
 
     const enabled = isConnected && chainId != undefined
 

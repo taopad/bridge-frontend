@@ -1,11 +1,9 @@
-import { useNetwork, useAccount } from "wagmi";
-import { SupportedChainId, info } from "@/config/chains";
+import { info } from "@/config/chains";
+import { useSourceChainId } from "./useSourceChainId";
 
 export function useSourceChainInfo() {
-    const { chain } = useNetwork()
-    const { isConnected } = useAccount()
+    const id = useSourceChainId()
 
-    const id = isConnected && chain && !chain.unsupported ? chain.id as SupportedChainId : undefined
     const selected = id ? info[id] : undefined
 
     return { id, info: selected }
