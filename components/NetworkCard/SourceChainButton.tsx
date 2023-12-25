@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image"
+
 import { useAccount, useNetwork } from "wagmi";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { useHasMounted } from "@/hooks/useHasMounted";
@@ -33,7 +35,7 @@ export function SourceChainButton() {
 
     return (
         <button className="btn-chain flex items-center" onClick={openChainModal}>
-            <img className="h-6 w-6" src={`/logos/${logo}.svg`} alt={name} />
+            <Image className="h-6 w-6" src={`/logos/${logo}.svg`} alt={name} />
             <div className="flex-1">{name}</div>
         </button>
     )
