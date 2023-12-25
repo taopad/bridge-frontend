@@ -1,6 +1,7 @@
 "use client";
 
 import { pad } from "viem";
+import { useState, useEffect } from "react";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useBigintInput } from "@/hooks/useBigintInput";
@@ -15,8 +16,10 @@ import { getTokenContract, getOftContract } from "@/config/contracts";
 import { Spinner } from "@/components/Spinner";
 import { SourceNativeFee } from "./SourceNativeFee";
 import { SourceNativeBalance } from "./SourceNativeBalance";
+import Link from "next/link";
 
 const nullAddress = "0x0000000000000000000000000000000000000000"
+const layerzeroscan = "https://layerzeroscan.com/tx"
 
 function useApprove() {
     const allowance = useAllowance()
@@ -101,6 +104,7 @@ function useBridge(amount: bigint, reset: () => void) {
 
 export function BridgeForm() {
     const { data } = useSourceTokenBalance()
+    const [hash, setHash] = useState<`0x${string}` | undefined>()
 
     const amount = useBigintInput(0n, data?.decimals ?? 0)
 
@@ -119,13 +123,18 @@ export function BridgeForm() {
                     </div>
                 </div>
                 <div>
-                    <SubmitButton amount={amount.value} reset={amount.reset} />
+                    <SubmitButton amount={amount.value} setHash={setHash} reset={amount.reset} />
                 </div>
             </div>
             <div className="flex flex-col gap-4 justify-between lg:flex-row">
                 <SourceNativeBalance />
                 <SourceNativeFee amount={amount.value} />
             </div>
+            {hash && (
+                <div>
+                    <Link href={`${layerzeroscan}/${hash}`} target="_blank">{hash}</Link>
+                </div>
+            )}
         </div>
     )
 }
@@ -145,7 +154,11 @@ function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
     )
 }
 
-function SubmitButton({ amount, reset }: { amount: bigint, reset: () => void }) {
+function SubmitButton({ amount, setHash, reset }: {
+    amount: bigint,
+    setHash: (hash: `0x${string}` | undefined) => void,
+    reset: () => void
+}) {
     const allowance = useAllowance()
     const hasMounted = useHasMounted()
     const fee = useEstimateSendFee(amount)
@@ -190,7 +203,7 @@ function SubmitButton({ amount, reset }: { amount: bigint, reset: () => void }) 
         return <ApproveButton />
     }
 
-    return <BridgeButton amount={amount} reset={reset} />
+    return <BridgeButton amount={amount} setHash={setHash} reset={reset} />
 }
 
 function ApproveButton() {
@@ -207,12 +220,20 @@ function ApproveButton() {
     )
 }
 
-function BridgeButton({ amount, reset }: { amount: bigint, reset: () => void }) {
+function BridgeButton({ amount, setHash, reset }: {
+    amount: bigint,
+    setHash: (hash: `0x${string}` | undefined) => void,
+    reset: () => void
+}) {
     const { prepare, action, wait } = useBridge(amount, reset)
 
     const preparing = prepare.isLoading || prepare.isError || !action.write
     const sending = action.isLoading || wait.isLoading
     const disabled = preparing || sending
+
+    useEffect(() => {
+        setHash(action.data?.hash)
+    }, [action.data?.hash])
 
     return (
         <button disabled={disabled} onClick={() => action.write?.()} className="card-button w-full h-full lg:w-48">
