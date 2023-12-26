@@ -132,7 +132,7 @@ export function BridgeForm() {
             </div>
             {hash && (
                 <div>
-                    <Link href={`${layerzeroscan}/${hash}`} target="_blank">{hash}</Link>
+                    See tx on explorer: <Link href={`${layerzeroscan}/${hash}`} target="_blank">{formatAddress(hash)}</Link>
                 </div>
             )}
         </div>
@@ -240,4 +240,8 @@ function BridgeButton({ amount, setHash, reset }: {
             {sending ? <Spinner /> : <span>Bridge</span>}
         </button>
     )
+}
+
+function formatAddress(address: `0x${string}`) {
+    return `${address.substring(0, 6)}...${address.substring(address.length - 6)}`
 }
