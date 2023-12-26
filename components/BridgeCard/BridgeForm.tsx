@@ -233,7 +233,7 @@ function BridgeButton({ amount, setHash, reset }: {
 
     useEffect(() => {
         setHash(action.data?.hash)
-    }, [action.data?.hash])
+    }, [setHash, action.data?.hash])
 
     return (
         <button disabled={disabled} onClick={() => action.write?.()} className="card-button w-full h-full lg:w-48">
