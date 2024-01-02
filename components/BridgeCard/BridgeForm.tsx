@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { pad } from "viem";
 import { useState, useEffect } from "react";
 import { useAllowance } from "@/hooks/useAllowance";
@@ -16,7 +18,6 @@ import { getTokenContract, getOftContract } from "@/config/contracts";
 import { Spinner } from "@/components/Spinner";
 import { SourceNativeFee } from "./SourceNativeFee";
 import { SourceNativeBalance } from "./SourceNativeBalance";
-import Link from "next/link";
 
 const nullAddress = "0x0000000000000000000000000000000000000000"
 const layerzeroscan = "https://layerzeroscan.com/tx"
@@ -76,6 +77,7 @@ function useBridge(amount: bigint, reset: () => void) {
         value: fee.data ?? 0n,
         scopeKey: address,
         enabled: isConnected
+            && address != undefined
             && allowance.isSuccess
             && sourceTokenBalance.isSuccess
             && sourceNativeBalance.isSuccess
@@ -159,6 +161,7 @@ function SubmitButton({ amount, setHash, reset }: {
     setHash: (hash: `0x${string}` | undefined) => void,
     reset: () => void
 }) {
+    const { isConnected, address } = useAccount()
     const allowance = useAllowance()
     const hasMounted = useHasMounted()
     const fee = useEstimateSendFee(amount)
@@ -170,6 +173,8 @@ function SubmitButton({ amount, setHash, reset }: {
     const insufficientAllowance = amount > (allowance.data ?? 0n)
 
     const loaded = hasMounted
+        && isConnected
+        && address != undefined
         && fee.isSuccess
         && sourceTokenBalance.isSuccess
         && sourceNativeBalance.isSuccess

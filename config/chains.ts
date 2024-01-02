@@ -1,5 +1,5 @@
 import { chains } from "./wallet";
-import { encodePacked } from "viem";
+import { parseEther, encodePacked } from "viem";
 
 export type LzId = 101 | 110
 
@@ -12,21 +12,25 @@ export type ChainConfig = {
     adapterParams: `0x${string}`
 }
 
-const adapterParams200k = encodePacked(['uint16', 'uint256'], [1, 200000n])
-const adapterParams2m = encodePacked(['uint16', 'uint256'], [1, 2000000n])
+const signature = ["uint16", "uint256", "uint256", "address"]
+
+const addressOnDst = "0x103A6781FDEa75eec690aCBfE12D7416E7c58900";
+
+const nativeForDstEther = parseEther("0.001");
 
 export const info: Record<SupportedChainId, ChainConfig> = {
     [1]: {
         name: "Ethereum",
         logo: "ethereum-eth-logo",
         lzId: 101,
-        adapterParams: adapterParams200k,
+        adapterParams: encodePacked(signature, [2, 200000n, nativeForDstEther, addressOnDst]),
     },
     [42161]: {
         name: "Arbitrum",
         logo: "arbitrum-arb-logo",
         lzId: 110,
-        adapterParams: adapterParams2m,
+        // 2M gas for arbitrum as stated in layerzero oft docs.
+        adapterParams: encodePacked(signature, [2, 2000000n, nativeForDstEther, addressOnDst]),
     },
 }
 
