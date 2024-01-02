@@ -5,6 +5,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { WalletProvider } from "@/components/WalletProvider";
 import { TargetChainProvider } from "@/components/TargetChainProvider";
+import Link from "next/link";
 
 const myFont = localFont({ src: "./RocGroteskWideMedium.otf" })
 
@@ -21,6 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <TargetChainProvider>
                         <div className="container mx-auto mt-4 px-2">
                             <Navbar />
+                        </div>
+                        <div className="my-4 text-center">
+                            Built by <Link href="https://taopad.io" target="_blank" className="underline">TaoPad</Link>.
+                            Powered by <Link href="https://layerzero.network/" target="_blank" className="underline">LayerZero</Link>.
                         </div>
                         <div className="max-w-[1024px] mx-auto mb-[120px] px-2">
                             {children}

@@ -6,7 +6,7 @@ export function Navbar() {
     return (
         <div className="flex">
             <div>
-                <Link href="https://taopad.io" target="_blank" className="block relative w-48 h-16">
+                <Link href="/" target="_blank" className="block relative w-48 h-16">
                     <Image src="/TaoPadLogo.png" alt="TaoPad" fill sizes="1" style={{ objectFit: "contain" }} />
                 </Link>
             </div>
