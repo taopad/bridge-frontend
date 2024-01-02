@@ -110,9 +110,9 @@ export function BridgeForm() {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="flex flex-col gap-4 lg:flex-row lg:gap-2">
                 <div className="form-control flex-1">
-                    <div className="flex gap-1">
+                    <div className="flex gap-2">
                         <input
                             type="text"
                             className="px-6 py-4 text-lg text-black w-full rounded-lg"
