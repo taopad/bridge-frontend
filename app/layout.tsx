@@ -10,8 +10,8 @@ import Link from "next/link";
 const myFont = localFont({ src: "./RocGroteskWideMedium.otf" })
 
 export const metadata: Metadata = {
-    title: 'TaoPad bridge',
-    description: 'TaoPad bridge for wTao',
+    title: 'Taobridge',
+    description: 'Taobridge (built by taopad.io)',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
