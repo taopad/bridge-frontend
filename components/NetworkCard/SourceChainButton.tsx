@@ -35,7 +35,7 @@ export function SourceChainButton() {
 
     return (
         <button className="btn-chain flex items-center" onClick={openChainModal}>
-            <Image className="h-6 w-6" src={`/logos/${logo}.svg`} alt={name} />
+            <Image className="h-6 w-6" width={1} height={1} src={`/logos/${logo}.svg`} alt={name} />
             <div className="flex-1">{name}</div>
         </button>
     )
