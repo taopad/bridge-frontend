@@ -275,7 +275,7 @@ function ApproveButton() {
             onClick={() => action.write?.()}
             className="w-full h-full lg:w-48"
         >
-            {sending ? <Spinner /> : <span>Approve</span>}
+            <Spinner loading={sending} /> <span>Approve</span>
         </Button>
     );
 }
@@ -305,7 +305,7 @@ function BridgeButton({
             onClick={() => action.write?.()}
             className="w-full h-full lg:w-48"
         >
-            {sending ? <Spinner /> : <span>Bridge</span>}
+            <Spinner loading={sending} /> <span>Bridge</span>
         </button>
     );
 }

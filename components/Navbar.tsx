@@ -1,6 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
-import { ConnectButton } from "./ConnectButton";
+import Link from "next/link"
+import Image from "next/image"
+import { WalletButton } from "@/components/WalletButton"
 
 export function Navbar() {
     return (
@@ -14,7 +14,7 @@ export function Navbar() {
                     style={{ objectFit: "contain" }}
                 />
             </Link>
-            <ConnectButton />
+            <WalletButton />
         </div>
-    );
+    )
 }
