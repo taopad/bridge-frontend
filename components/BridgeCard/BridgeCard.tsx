@@ -1,12 +1,19 @@
 import { BridgeForm } from "./BridgeForm";
 import { SourceChainName } from "@/components/SourceChainName";
 import { TargetChainName } from "@/components/TargetChainName";
+import { Card, CardContent, CardHeader } from "../ui/card";
 
 export function BridgeCard() {
-    return (
-        <div className="card flex flex-col gap-4">
-            <h2>Bridge wTao from <SourceChainName /> to <TargetChainName /></h2>
-            <BridgeForm />
-        </div>
-    )
+	return (
+		<Card className="card bg-black">
+			<CardHeader>
+				<div className="flex gap-2">
+					Bridge wTao from <SourceChainName /> to <TargetChainName />
+				</div>
+			</CardHeader>
+			<CardContent>
+				<BridgeForm />
+			</CardContent>
+		</Card>
+	);
 }

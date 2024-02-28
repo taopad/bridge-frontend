@@ -1,34 +1,32 @@
 import { BridgeCard } from "@/components/BridgeCard/BridgeCard";
+import { ComingSoon } from "@/components/ComingSoon";
 import { NetworkCard } from "@/components/NetworkCard/NetworkCard";
-import { getTokenContract } from "@/config/contracts";
-import { info } from "@/config/chains";
+import { TokenAddress } from "@/components/NetworkCard/TokenAddress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Home() {
-    return (
-        <main className="flex flex-col gap-4">
-            <NetworkCard />
-            <BridgeCard />
-            <div className="card flex flex-col gap-4">
-                <h2>wTao token addresses:</h2>
-                <div className="flex gap-4">
-                    <div className="w-32 text-right">{info[1].name}</div>
-                    <input
-                        type="text"
-                        className="bg-black text-white w-full border-0 flex-1 focus:outline-none focus:ring-0"
-                        value={getTokenContract(1).address}
-                        readOnly
-                    />
-                </div>
-                <div className="flex gap-4">
-                    <div className="w-32 text-right">{info[42161].name}</div>
-                    <input
-                        type="text"
-                        className="bg-black text-white w-full border-0 flex-1 focus:outline-none focus:ring-0"
-                        value={getTokenContract(42161).address}
-                        readOnly
-                    />
-                </div>
-            </div>
-        </main>
-    )
+	return (
+		<main className="max-w-[700px] w-full mx-auto">
+			<Tabs defaultValue="account" className="w-[700px]">
+				<TabsList className="w-full grid grid-cols-3">
+					<TabsTrigger value="wtao">wTao</TabsTrigger>
+					<TabsTrigger value="tbank">taoBank</TabsTrigger>
+					<TabsTrigger value="taousd">taoUsd</TabsTrigger>
+				</TabsList>
+				<TabsContent value="wtao">
+					<div className="flex flex-col gap-4">
+						<NetworkCard />
+						<BridgeCard />
+						<TokenAddress />
+					</div>
+				</TabsContent>
+				<TabsContent value="tbank">
+					<ComingSoon />
+				</TabsContent>
+				<TabsContent value="taousd">
+					<ComingSoon />
+				</TabsContent>
+			</Tabs>
+		</main>
+	);
 }
