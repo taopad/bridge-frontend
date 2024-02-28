@@ -83,7 +83,7 @@
     }
 
     a {
-        @apply font-medium text-white underline underline-offset-4;
+        @apply font-medium text-primary underline underline-offset-4
     }
 
     .muted {
