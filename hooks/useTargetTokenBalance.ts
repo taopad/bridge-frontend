@@ -1,16 +1,53 @@
-import { useAccount, useBalance } from "wagmi";
-import { getTokenContract } from "@/config/contracts";
-import { useTargetChainId } from "./useTargetChainId";
+import { erc20Abi } from "viem"
+import { useEffect } from "react"
+import { useAccount, useBlockNumber, useReadContracts } from "wagmi"
+import { useTokenConfig } from "./useTokenConfig"
 
 export function useTargetTokenBalance() {
-    const chainId = useTargetChainId()
+    const { targetToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
+    const { data: blockNumber } = useBlockNumber({
+        chainId: targetToken?.info.chain.id,
+        watch: true,
+    })
 
-    const contract = getTokenContract(chainId)
+    const targetTokenAddress = targetToken?.token ?? "0x"
+    const targetTokenChainId = targetToken?.info.chain.id
 
-    const token = contract.address ?? "0x0"
+    const hook = useReadContracts({
+        allowFailure: false,
+        contracts: [
+            {
+                abi: erc20Abi,
+                address: targetTokenAddress,
+                chainId: targetTokenChainId,
+                functionName: "symbol",
+            },
+            {
+                abi: erc20Abi,
+                address: targetTokenAddress,
+                chainId: targetTokenChainId,
+                functionName: "decimals",
+            },
+            {
+                abi: erc20Abi,
+                address: targetTokenAddress,
+                chainId: targetTokenChainId,
+                functionName: "balanceOf",
+                args: [address ?? "0x"],
+            },
+        ],
+        query: {
+            enabled: isConnected && targetToken !== undefined,
+            select: (data) => ({
+                symbol: data[0],
+                decimals: data[1],
+                value: data[2],
+            })
+        },
+    })
 
-    const enabled = isConnected && chainId != undefined
+    useEffect(() => { hook.refetch() }, [blockNumber])
 
-    return useBalance({ chainId, address, token, enabled, scopeKey: address, watch: true });
+    return hook
 }

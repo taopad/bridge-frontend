@@ -1,19 +1,26 @@
-import { useAccount, useContractRead } from "wagmi";
-import { getTokenContract, getOftContract } from "@/config/contracts";
-import { useSourceChainId } from "./useSourceChainId";
+import { erc20Abi } from "viem"
+import { useAccount, useReadContract } from "wagmi"
+import { useTokenConfig } from "./useTokenConfig"
 
 export function useAllowance() {
-    const sourceChainId = useSourceChainId()
     const { isConnected, address } = useAccount()
+    const { sourceToken, targetToken } = useTokenConfig()
 
-    const oft = getOftContract(sourceChainId)
-    const token = getTokenContract(sourceChainId)
+    const sourceTokenChainId = sourceToken?.info.chain.id
+    const sourceTokenAddress = sourceToken?.token ?? "0x"
+    const targetTokenAddress = targetToken?.oft ?? "0x"
 
-    return useContractRead({
-        ...token,
+    return useReadContract({
+        abi: erc20Abi,
+        address: sourceTokenAddress,
+        chainId: sourceTokenChainId,
         functionName: "allowance",
-        args: [address ?? "0x", oft.address ?? "0x"],
+        args: [address ?? "0x", targetTokenAddress],
         scopeKey: address,
-        enabled: isConnected && sourceChainId != undefined,
+        query: {
+            enabled: isConnected
+                && sourceToken != undefined
+                && targetToken !== undefined,
+        },
     })
 }

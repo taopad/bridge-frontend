@@ -1,7 +1,7 @@
-import { BridgeForm } from "./BridgeForm";
-import { SourceChainName } from "@/components/SourceChainName";
-import { TargetChainName } from "@/components/TargetChainName";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { BridgeForm } from "./BridgeForm"
+import { SourceChainName } from "@/components/SourceChainName"
+import { TargetChainName } from "@/components/TargetChainName"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function BridgeCard() {
     return (

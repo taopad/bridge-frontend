@@ -1,21 +1,16 @@
-"use client";
+"use client"
 
-import { useAccount } from "wagmi";
-import { useHasMounted } from "@/hooks/useHasMounted";
-import { useTargetTokenBalance } from "@/hooks/useTargetTokenBalance";
+import { formatUnits } from "viem"
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { useTargetTokenBalance } from "@/hooks/useTargetTokenBalance"
 
 export function TargetTokenBalance() {
-    const { isConnected } = useAccount()
-    const balance = useTargetTokenBalance()
     const hasMounted = useHasMounted()
+    const balance = useTargetTokenBalance()
 
-    if (!hasMounted) return <span>-</span>
-
-    if (!isConnected) return <span>Wallet not connected</span>
-
-    if (balance.isSuccess && balance.data) {
-        return <span>{balance.data.formatted} ${balance.data.symbol}</span>
+    if (!hasMounted || !balance.isSuccess || balance.data === undefined) {
+        return <span>-</span>
     }
 
-    return <span>No target chain selected</span>
+    return <span>{formatUnits(balance.data.value, balance.data.decimals)} ${balance.data.symbol}</span>
 }

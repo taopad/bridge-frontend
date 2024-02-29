@@ -1,18 +1,16 @@
-"use client";
+"use client"
 
-import { useHasMounted } from "@/hooks/useHasMounted";
-import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance";
-import { formatAmount } from "@/utils/formatAmount";
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
+import { formatAmount } from "@/utils/formatAmount"
 
 export function SourceNativeBalance() {
-    const balance = useSourceNativeBalance()
     const hasMounted = useHasMounted()
+    const balance = useSourceNativeBalance()
 
-    if (!hasMounted) return <span>-</span>
-
-    if (balance.isSuccess && balance.data) {
-        return <span>Native token balance: {formatAmount(balance.data.formatted)} ${balance.data.symbol}</span>
+    if (!hasMounted || !balance.isSuccess || balance.data === undefined) {
+        return <span>-</span>
     }
 
-    return <span>-</span>
+    return <span>{formatAmount(balance.data.value, balance.data.decimals)} ${balance.data.symbol}</span>
 }

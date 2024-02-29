@@ -1,12 +1,13 @@
-import { useAccount, useBalance } from "wagmi";
-import { SupportedChainId } from "@/config/chains";
-import { useSourceChainId } from "./useSourceChainId";
+import { useEffect } from "react"
+import { useAccount, useBlockNumber, useBalance } from "wagmi"
 
 export function useSourceNativeBalance() {
-    const chainId = useSourceChainId()
-    const { isConnected, address } = useAccount()
+    const { address } = useAccount()
+    const { data: blockNumber } = useBlockNumber({ watch: true })
 
-    const enabled = isConnected && chainId != undefined
+    const hook = useBalance({ address })
 
-    return useBalance({ chainId, address, enabled, scopeKey: address });
+    useEffect(() => { hook.refetch() }, [blockNumber])
+
+    return hook
 }

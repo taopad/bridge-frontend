@@ -1,8 +1,8 @@
-import { SourceTokenBalance } from "./SourceTokenBalance";
-import { TargetTokenBalance } from "./TargetTokenBalance";
-import { SourceChainButton } from "./SourceChainButton";
-import { TargetChainSelector } from "./TargetChainSelector";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { SourceTokenBalance } from "./SourceTokenBalance"
+import { TargetTokenBalance } from "./TargetTokenBalance"
+import { SourceChainButton } from "./SourceChainButton"
+import { TargetChainSelector } from "./TargetChainSelector"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function NetworkCard() {
     return (
@@ -23,5 +23,5 @@ export function NetworkCard() {
                 </div>
             </CardContent>
         </Card>
-    );
+    )
 }

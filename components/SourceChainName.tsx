@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { useHasMounted } from "@/hooks/useHasMounted";
-import { useSourceChainInfo } from "@/hooks/useSourceChainInfo";
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { useTokenConfig } from "@/hooks/useTokenConfig"
 
 export function SourceChainName() {
-    const { info } = useSourceChainInfo()
     const hasMounted = useHasMounted()
+    const { sourceToken } = useTokenConfig()
 
-    if (hasMounted && info) {
-        return <span>{info.name}</span>
+    if (!hasMounted || sourceToken === undefined) {
+        return <span>-</span>
     }
 
-    return <span>-</span>
+    return <span>{sourceToken.info.chain.name}</span>
 }

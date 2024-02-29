@@ -1,132 +1,102 @@
-"use client";
+"use client"
 
-import Link from "next/link";
+import Link from "next/link"
 
-import { pad } from "viem";
-import { useState, useEffect } from "react";
-import { useAllowance } from "@/hooks/useAllowance";
-import { useHasMounted } from "@/hooks/useHasMounted";
-import { useBigintInput } from "@/hooks/useBigintInput";
-import { useSourceChainId } from "@/hooks/useSourceChainId";
-import { useEstimateSendFee } from "@/hooks/useEstimateSendFee";
-import { useTargetChainInfo } from "@/hooks/useTargetChainInfo";
-import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance";
-import { useTargetTokenBalance } from "@/hooks/useTargetTokenBalance";
-import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance";
-import {
-    useAccount,
-    usePrepareContractWrite,
-    useContractWrite,
-    useWaitForTransaction,
-} from "wagmi";
-import { getTokenContract, getOftContract } from "@/config/contracts";
-import { Spinner } from "@/components/Spinner";
-import { SourceNativeFee } from "./SourceNativeFee";
-import { SourceNativeBalance } from "./SourceNativeBalance";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { erc20Abi, pad } from "viem"
+import { useState, useEffect } from "react"
+import { useAccount, useSimulateContract, useWriteContract } from "wagmi"
+import { useAllowance } from "@/hooks/useAllowance"
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { useBigintInput } from "@/hooks/useBigintInput"
+import { useTokenConfig } from "@/hooks/useTokenConfig"
+import { useEstimateSendFee } from "@/hooks/useEstimateSendFee"
+import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
+import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
+import { Spinner } from "@/components/Spinner"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { SourceNativeFee } from "./SourceNativeFee"
+import { SourceNativeBalance } from "./SourceNativeBalance"
+import OftV2Abi from "@/config/abi/OftV2"
 
-const nullAddress = "0x0000000000000000000000000000000000000000";
-const layerzeroscan = "https://layerzeroscan.com/tx";
+const nullAddress = "0x0000000000000000000000000000000000000000"
+const layerzeroscan = "https://layerzeroscan.com/tx"
 
-function useApprove() {
-    const allowance = useAllowance();
-    const sourceChainId = useSourceChainId();
-    const { isConnected, address } = useAccount();
+function useSimulateApprove() {
+    const { sourceToken } = useTokenConfig()
+    const { isConnected, address } = useAccount()
 
-    const oft = getOftContract(sourceChainId);
-    const token = getTokenContract(sourceChainId);
+    const sourceOftAddress = sourceToken?.oft ?? "0x"
+    const sourceTokenAddress = sourceToken?.token ?? "0x"
 
-    const prepare = usePrepareContractWrite({
-        ...token,
+    return useSimulateContract({
+        abi: erc20Abi,
+        address: sourceTokenAddress,
         functionName: "approve",
-        args: [oft.address ?? "0x", BigInt(2 ** (256 - 1))],
+        args: [sourceOftAddress, BigInt(2 ** (256 - 1))],
+        account: address,
         scopeKey: address,
-        enabled: isConnected && sourceChainId != undefined,
-    });
-
-    const action = useContractWrite(prepare.config);
-
-    const wait = useWaitForTransaction({
-        hash: action.data?.hash,
-        onSuccess() {
-            allowance.refetch();
+        query: {
+            enabled: isConnected && sourceToken != undefined,
         },
-    });
-
-    return { prepare, action, wait };
+    })
 }
 
-function useBridge(amount: bigint, reset: () => void) {
-    const allowance = useAllowance();
-    const sourceChainId = useSourceChainId();
-    const { info: targetChainInfo } = useTargetChainInfo();
-    const { isConnected, address } = useAccount();
+function useSimulateBridge(amount: bigint) {
+    const { isConnected, address } = useAccount()
+    const { sourceToken, targetToken } = useTokenConfig()
 
-    const fee = useEstimateSendFee(amount);
-    const sourceTokenBalance = useSourceTokenBalance();
-    const targetTokenBalance = useTargetTokenBalance();
-    const sourceNativeBalance = useSourceNativeBalance();
+    const hooks = {
+        fee: useEstimateSendFee(amount),
+        allowance: useAllowance(),
+        sourceTokenBalance: useSourceTokenBalance(),
+        sourceNativeBalance: useSourceNativeBalance(),
+    }
 
-    const address32Bytes = address ? pad(address) : "0x";
-    const targetLzId = targetChainInfo ? targetChainInfo.lzId : 0;
-    const adapterParams = targetChainInfo
-        ? targetChainInfo.adapterParams
-        : "0x";
+    const lzId = targetToken?.info.lzId ?? 0
+    const adapterParams = targetToken?.info.adapterParams ?? "0x"
+    const address32Bytes = address ? pad(address) : "0x"
+    const sourceOftAddress = sourceToken?.oft ?? "0x"
+    const fee = hooks.fee.data ?? 0n
+    const allowance = hooks.allowance.data ?? 0n
+    const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
+    const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
 
-    const oft = getOftContract(sourceChainId);
-
-    const prepare = usePrepareContractWrite({
-        ...oft,
+    return useSimulateContract({
+        abi: OftV2Abi,
+        address: sourceOftAddress,
         functionName: "sendFrom",
-        args: [
-            address ?? "0x",
-            targetLzId,
-            address32Bytes,
-            amount,
-            {
-                refundAddress: address ?? "0x",
-                zroPaymentAddress: nullAddress,
-                adapterParams: adapterParams,
-            },
-        ],
-        value: fee.data ?? 0n,
+        args: [address ?? "0x", lzId, address32Bytes, amount, {
+            refundAddress: address ?? "0x",
+            zroPaymentAddress: nullAddress,
+            adapterParams: adapterParams,
+        }],
+        value: fee,
+        account: address,
         scopeKey: address,
-        enabled:
-            isConnected &&
-            address != undefined &&
-            allowance.isSuccess &&
-            sourceTokenBalance.isSuccess &&
-            sourceNativeBalance.isSuccess &&
-            fee.isSuccess &&
-            sourceChainId != undefined &&
-            targetChainInfo != undefined &&
-            (sourceNativeBalance.data?.value ?? 0n) > (fee.data ?? 0n) &&
-            amount > 0 &&
-            amount <= (sourceTokenBalance.data?.value ?? 0n) &&
-            amount <= (allowance.data ?? 0n),
-    });
-
-    const action = useContractWrite(prepare.config);
-
-    const wait = useWaitForTransaction({
-        hash: action.data?.hash,
-        onSuccess() {
-            reset();
-            sourceTokenBalance.refetch();
-            targetTokenBalance.refetch();
-            sourceNativeBalance.refetch();
+        query: {
+            enabled: isConnected &&
+                sourceToken != undefined &&
+                targetToken != undefined &&
+                hooks.fee.isSuccess &&
+                hooks.allowance.isSuccess &&
+                hooks.sourceTokenBalance.isSuccess &&
+                hooks.sourceNativeBalance.isSuccess &&
+                amount > 0 &&
+                amount <= allowance &&
+                amount <= sourceTokenBalance &&
+                sourceNativeBalance >= fee,
         },
-    });
-
-    return { prepare, action, wait };
+    })
 }
 
 export function BridgeForm() {
-    const { data } = useSourceTokenBalance();
-    const [hash, setHash] = useState<`0x${string}` | undefined>();
+    const [hash, setHash] = useState<`0x${string}`>()
+    const sourceTokenBalance = useSourceTokenBalance()
 
-    const amount = useBigintInput(0n, data?.decimals ?? 0);
+    const decimals = sourceTokenBalance.data?.decimals ?? 0
+
+    const amount = useBigintInput(0n, decimals)
 
     return (
         <div className="flex flex-col gap-4">
@@ -152,28 +122,28 @@ export function BridgeForm() {
                 </div>
             </div>
             <div className="flex flex-col gap-4 justify-between lg:flex-row">
-                <SourceNativeBalance />
-                <SourceNativeFee amount={amount.value} />
+                <span>Native token balance: <SourceNativeBalance /></span>
+                <span>Bridge fee: <SourceNativeFee amount={amount.value} /></span>
             </div>
             {hash && (
                 <div>
                     See tx on explorer:{" "}
                     <Link href={`${layerzeroscan}/${hash}`} target="_blank">
-                        {formatAddress(hash)}
+                        {hash}
                     </Link>
                 </div>
             )}
         </div>
-    );
+    )
 }
 
 function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
-    const hasMounted = useHasMounted();
-    const { data, isSuccess } = useSourceTokenBalance();
+    const hasMounted = useHasMounted()
+    const sourceTokenBalance = useSourceTokenBalance()
 
-    const balance = data?.value ?? 0n;
+    const balance = sourceTokenBalance.data?.value ?? 0n
 
-    const disabled = !hasMounted || !isSuccess;
+    const disabled = !hasMounted || !sourceTokenBalance.isSuccess
 
     return (
         <Button
@@ -184,134 +154,127 @@ function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
         >
             Max
         </Button>
-    );
+    )
 }
 
-function SubmitButton({
-    amount,
-    setHash,
-    reset,
-}: {
-    amount: bigint;
-    setHash: (hash: `0x${string}` | undefined) => void;
-    reset: () => void;
+function SubmitButton({ amount, setHash, reset }: {
+    amount: bigint
+    setHash: (hash: `0x${string}` | undefined) => void
+    reset: () => void
 }) {
-    const { isConnected, address } = useAccount();
-    const allowance = useAllowance();
-    const hasMounted = useHasMounted();
-    const fee = useEstimateSendFee(amount);
-    const sourceTokenBalance = useSourceTokenBalance();
-    const sourceNativeBalance = useSourceNativeBalance();
+    const hasMounted = useHasMounted()
+    const { isConnected, address } = useAccount()
 
-    const insufficientTokenBalance =
-        amount > (sourceTokenBalance.data?.value ?? 0n);
-    const insufficientNativeBalance =
-        (fee.data ?? 0n) >= (sourceNativeBalance.data?.value ?? 0n);
-    const insufficientAllowance = amount > (allowance.data ?? 0n);
+    const hooks = {
+        fee: useEstimateSendFee(amount),
+        allowance: useAllowance(),
+        sourceTokenBalance: useSourceTokenBalance(),
+        sourceNativeBalance: useSourceNativeBalance(),
+    }
+
+    const fee = hooks.fee.data ?? 0n
+    const allowance = hooks.allowance.data ?? 0n
+    const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
+    const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
+
+    const insufficientTokenBalance = amount > sourceTokenBalance
+    const insufficientNativeBalance = fee > sourceNativeBalance
+    const insufficientAllowance = amount > allowance
 
     const loaded =
         hasMounted &&
         isConnected &&
-        address != undefined &&
-        fee.isSuccess &&
-        sourceTokenBalance.isSuccess &&
-        sourceNativeBalance.isSuccess &&
-        amount > 0;
+        hooks.fee.isSuccess &&
+        hooks.allowance.isSuccess &&
+        hooks.sourceTokenBalance.isSuccess &&
+        hooks.sourceNativeBalance.isSuccess &&
+        amount > 0
 
     if (!loaded) {
         return (
-            <Button
-                disabled
-                variant="secondary"
-                className="w-full h-full lg:w-48"
-            >
+            <Button disabled variant="secondary" className="w-full">
                 Bridge
             </Button>
-        );
+        )
     }
 
     if (insufficientTokenBalance) {
         return (
-            <Button
-                variant="secondary"
-                disabled
-                className="w-full h-full lg:w-48"
-            >
+            <Button variant="secondary" disabled>
                 Ins. balance
             </Button>
-        );
+        )
     }
 
     if (insufficientNativeBalance) {
         return (
-            <Button
-                variant="secondary"
-                disabled
-                className="w-full h-full lg:w-48"
-            >
+            <Button variant="secondary" disabled>
                 Ins. balance
             </Button>
-        );
+        )
     }
 
     if (insufficientAllowance) {
-        return <ApproveButton />;
+        return <ApproveButton />
     }
 
-    return <BridgeButton amount={amount} setHash={setHash} reset={reset} />;
+    return <BridgeButton amount={amount} setHash={setHash} reset={reset} />
 }
 
 function ApproveButton() {
-    const { prepare, action, wait } = useApprove();
+    const allowance = useAllowance()
 
-    const preparing = prepare.isLoading || prepare.isError || !action.write;
-    const sending = action.isLoading || wait.isLoading;
-    const disabled = preparing || sending;
+    const { data, isLoading } = useSimulateApprove()
+
+    const { writeContract, isPending } = useWriteContract({
+        mutation: {
+            onSuccess: () => {
+                allowance.refetch()
+            }
+        }
+    })
+
+    const loading = isLoading || isPending
+    const disabled = loading || !Boolean(data?.request)
 
     return (
         <Button
             variant="secondary"
             disabled={disabled}
-            onClick={() => action.write?.()}
-            className="w-full h-full lg:w-48"
+            onClick={() => writeContract(data!.request)}
         >
-            <Spinner loading={sending} /> <span>Approve</span>
+            <Spinner loading={loading} /> <span>Approve</span>
         </Button>
-    );
+    )
 }
 
-function BridgeButton({
-    amount,
-    setHash,
-    reset,
-}: {
-    amount: bigint;
-    setHash: (hash: `0x${string}` | undefined) => void;
-    reset: () => void;
+function BridgeButton({ amount, setHash, reset }: {
+    amount: bigint
+    setHash: (hash: `0x${string}` | undefined) => void
+    reset: () => void
 }) {
-    const { prepare, action, wait } = useBridge(amount, reset);
+    const { data, isLoading } = useSimulateBridge(amount)
 
-    const preparing = prepare.isLoading || prepare.isError || !action.write;
-    const sending = action.isLoading || wait.isLoading;
-    const disabled = preparing || sending;
+    const { writeContract, isPending, data: hash } = useWriteContract({
+        mutation: {
+            onSuccess: () => {
+                reset()
+            }
+        }
+    })
 
-    useEffect(() => {
-        setHash(action.data?.hash);
-    }, [setHash, action.data?.hash]);
+    const loading = isLoading || isPending
+    const disabled = loading || !Boolean(data?.request)
+
+    useEffect(() => { setHash(hash) }, [setHash, hash])
 
     return (
-        <button
+        <Button
+            variant="secondary"
             disabled={disabled}
-            onClick={() => action.write?.()}
-            className="w-full h-full lg:w-48"
+            onClick={() => writeContract(data!.request)}
         >
-            <Spinner loading={sending} /> <span>Bridge</span>
-        </button>
-    );
-}
-
-function formatAddress(address: `0x${string}`) {
-    return `${address.substring(0, 6)}...${address.substring(
-        address.length - 6
-    )}`;
+            <Spinner loading={loading} /> <span>Bridge</span>
+        </Button>
+    )
 }

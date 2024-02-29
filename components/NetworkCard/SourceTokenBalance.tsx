@@ -1,17 +1,16 @@
-"use client";
+"use client"
 
-import { useHasMounted } from "@/hooks/useHasMounted";
-import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance";
+import { formatUnits } from "viem"
+import { useHasMounted } from "@/hooks/useHasMounted"
+import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 
 export function SourceTokenBalance() {
-    const balance = useSourceTokenBalance()
     const hasMounted = useHasMounted()
+    const balance = useSourceTokenBalance()
 
-    if (!hasMounted) return <span>-</span>
-
-    if (balance.isSuccess && balance.data) {
-        return <span>{balance.data.formatted} ${balance.data.symbol}</span>
+    if (!hasMounted || !balance.isSuccess || balance.data === undefined) {
+        return <span>-</span>
     }
 
-    return <span>Connect to source chain</span>
+    return <span>{formatUnits(balance.data.value, balance.data.decimals)} ${balance.data.symbol}</span>
 }
