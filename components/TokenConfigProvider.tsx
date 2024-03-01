@@ -4,6 +4,8 @@ import { useAccount } from "wagmi"
 import { createContext, useState, useEffect } from "react"
 import { TokenConfig, TokenConfigList, configs } from "@/config/tokens"
 
+type TokenType = "wtao" | "tbank"
+
 type TokenConfigState = {
     sourceToken: TokenConfig | undefined
     targetToken: TokenConfig | undefined
@@ -18,7 +20,7 @@ export const TokenConfigContext = createContext<TokenConfigState>({
     setTargetChainId: (chainId: number | undefined) => { },
 })
 
-export function TokenConfigProvider({ token, children }: { token: "wtao", children: React.ReactNode }) {
+export function TokenConfigProvider({ token, children }: { token: TokenType, children: React.ReactNode }) {
     const { chain } = useAccount()
     const [targetChainId, setTargetChainId] = useState<number>()
     const tokenConfigList = configs[token]

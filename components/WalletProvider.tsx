@@ -8,7 +8,9 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit"
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 import { configs } from "@/config/wallets"
 
-export function WalletProvider({ token, children }: { token: "wtao", children: React.ReactNode }) {
+type TokenType = "wtao" | "tbank"
+
+export function WalletProvider({ token, children }: { token: TokenType, children: React.ReactNode }) {
     const config = configs[token]
     const [queryClient] = useState(() => new QueryClient())
 

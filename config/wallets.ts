@@ -45,4 +45,14 @@ const wtao = createConfig({
     },
 })
 
-export const configs = { wtao }
+const tbank = createConfig({
+    ssr: true,
+    connectors,
+    chains: [mainnet, arbitrum],
+    transports: {
+        [mainnet.id]: fallback([http(rpcs[mainnet.id]), http()]),
+        [arbitrum.id]: fallback([http(rpcs[arbitrum.id]), http()]),
+    },
+})
+
+export const configs = { wtao, tbank }
