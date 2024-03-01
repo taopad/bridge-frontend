@@ -1,19 +1,20 @@
 import { BridgeLayout } from "@/components/BridgeLayout"
 import { BridgeCard } from "@/components/BridgeCard/BridgeCard"
+import { BridgeForm } from "@/components/BridgeCard/BridgeForm"
 import { NetworkCard } from "@/components/NetworkCard/NetworkCard"
-import { BridgeFormV1 } from "@/components/BridgeCard/BridgeFormV1"
 import { TokenAddresses } from "@/components/TokenAddresses"
+import { Card, CardContent } from "@/components/ui/card"
 
 const name = "TBANK"
 
-export default function TBANK() {
+export default function wTao() {
     return (
         <BridgeLayout token="tbank">
-            <NetworkCard />
-            <BridgeCard name={name}>
-                <BridgeFormV1 />
-            </BridgeCard>
-            <TokenAddresses name={name} />
+            <Card>
+                <CardContent className="text-center p-5">
+                    Coming soon
+                </CardContent>
+            </Card>
         </BridgeLayout>
     )
 }

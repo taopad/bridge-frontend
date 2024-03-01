@@ -1,4 +1,4 @@
-import { Chain, encodePacked, formatEther, parseEther } from "viem"
+import { Chain, encodePacked } from "viem"
 import { mainnet, arbitrum } from "viem/chains"
 
 // all token/oft addresses.
@@ -16,8 +16,8 @@ const signatureV1 = ["uint16", "uint256"]
 const adapterParamsV1 = encodePacked(signatureV1, [1, 200000n])
 const adapterParamsV1Arbitrum = encodePacked(signatureV1, [1, 2000000n])
 
-const adapterParamsV2 = encodePacked(["uint16", "uint128", "uint128"], [3, 200000n, parseEther('1')])
-const adapterParamsV2Arbitrum = encodePacked(["uint16", "uint128", "uint128"], [3, 2000000n, parseEther('1')])
+const adapterParamsV2 = encodePacked(["uint16", "uint128"], [3, 200000n])
+const adapterParamsV2Arbitrum = encodePacked(["uint16", "uint128"], [3, 2000000n])
 
 const chains = {
     [mainnet.id]: {

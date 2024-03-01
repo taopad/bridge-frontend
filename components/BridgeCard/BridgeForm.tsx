@@ -2,77 +2,27 @@
 
 import Link from "next/link"
 
-import { pad } from "viem"
-import { useState, useEffect } from "react"
-import { useAccount, useSimulateContract, useWriteContract } from "wagmi"
+import { useState } from "react"
+import { useAccount } from "wagmi"
 import { useAllowance } from "@/hooks/useAllowance"
 import { useHasMounted } from "@/hooks/useHasMounted"
 import { useBigintInput } from "@/hooks/useBigintInput"
-import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { useEstimateSendFeeV1 } from "@/hooks/useEstimateSendFeeV1"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
-import { Spinner } from "@/components/Spinner"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { MaxButton } from "./MaxButton"
 import { ApproveButton } from "./ApproveButton"
 import { SourceNativeFeeV1 } from "./SourceNativeFeeV1"
 import { SourceNativeBalance } from "./SourceNativeBalance"
-import OftV1Abi from "@/config/abi/OftV1"
+import { BridgeButtonV1 } from "./BridgeButtonV1"
 
-const nullAddress = "0x0000000000000000000000000000000000000000"
+type LzVersion = "v1" | "v2"
+
 const layerzeroscan = "https://layerzeroscan.com/tx"
 
-function useSimulateBridge(amount: bigint) {
-    const { isConnected, address } = useAccount()
-    const { sourceToken, targetToken } = useTokenConfig()
-
-    const hooks = {
-        fee: useEstimateSendFeeV1(amount),
-        allowance: useAllowance(),
-        sourceTokenBalance: useSourceTokenBalance(),
-        sourceNativeBalance: useSourceNativeBalance(),
-    }
-
-    const lzId = targetToken?.info.lzId ?? 0
-    const adapterParams = targetToken?.adapterParams ?? "0x"
-    const address32Bytes = address ? pad(address) : "0x"
-    const sourceOftAddress = sourceToken?.oft ?? "0x"
-    const fee = hooks.fee.data ?? 0n
-    const allowance = hooks.allowance.data ?? 0n
-    const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
-    const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
-
-    return useSimulateContract({
-        abi: OftV1Abi,
-        address: sourceOftAddress,
-        functionName: "sendFrom",
-        args: [address ?? "0x", lzId, address32Bytes, amount, {
-            refundAddress: address ?? "0x",
-            zroPaymentAddress: nullAddress,
-            adapterParams: adapterParams,
-        }],
-        value: fee,
-        account: address,
-        scopeKey: address,
-        query: {
-            enabled: isConnected &&
-                sourceToken != undefined &&
-                targetToken != undefined &&
-                hooks.fee.isSuccess &&
-                hooks.allowance.isSuccess &&
-                hooks.sourceTokenBalance.isSuccess &&
-                hooks.sourceNativeBalance.isSuccess &&
-                amount > 0 &&
-                amount <= allowance &&
-                amount <= sourceTokenBalance &&
-                sourceNativeBalance >= fee,
-        },
-    })
-}
-
-export function BridgeFormV1() {
+export function BridgeForm({ version }: { version: LzVersion }) {
     const [hash, setHash] = useState<`0x${string}`>()
     const sourceTokenBalance = useSourceTokenBalance()
 
@@ -97,6 +47,7 @@ export function BridgeFormV1() {
                 </div>
                 <div>
                     <SubmitButton
+                        version={version}
                         amount={amount.value}
                         setHash={setHash}
                         reset={amount.reset}
@@ -105,7 +56,7 @@ export function BridgeFormV1() {
             </div>
             <div className="flex flex-col gap-4 justify-between lg:flex-row">
                 <span>Native token balance: <SourceNativeBalance /></span>
-                <span>Bridge fee: <SourceNativeFeeV1 amount={amount.value} /></span>
+                <span>Bridge fee: <SourceNativeFee version={version} amount={amount.value} /></span>
             </div>
             {hash && (
                 <div>
@@ -119,7 +70,18 @@ export function BridgeFormV1() {
     )
 }
 
-function SubmitButton({ amount, setHash, reset }: {
+function SourceNativeFee({ version, amount }: { version: LzVersion, amount: bigint }) {
+    if (version === "v1") {
+        return <SourceNativeFeeV1 amount={amount} />
+    }
+
+    if (version === "v2") {
+        return <SourceNativeFeeV1 amount={amount} />
+    }
+}
+
+function SubmitButton({ version, amount, setHash, reset }: {
+    version: LzVersion
     amount: bigint
     setHash: (hash: `0x${string}` | undefined) => void
     reset: () => void
@@ -138,7 +100,6 @@ function SubmitButton({ amount, setHash, reset }: {
     const allowance = hooks.allowance.data ?? 0n
     const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
     const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
-
     const insufficientTokenBalance = amount > sourceTokenBalance
     const insufficientNativeBalance = fee > sourceNativeBalance
     const insufficientAllowance = amount > allowance
@@ -180,37 +141,11 @@ function SubmitButton({ amount, setHash, reset }: {
         return <ApproveButton />
     }
 
-    return <BridgeButton amount={amount} setHash={setHash} reset={reset} />
-}
+    if (version === "v1") {
+        return <BridgeButtonV1 amount={amount} setHash={setHash} reset={reset} />
+    }
 
-function BridgeButton({ amount, setHash, reset }: {
-    amount: bigint
-    setHash: (hash: `0x${string}` | undefined) => void
-    reset: () => void
-}) {
-    const { data, isLoading } = useSimulateBridge(amount)
-
-    const { writeContract, isPending, data: hash } = useWriteContract({
-        mutation: {
-            onSuccess: () => {
-                reset()
-            }
-        }
-    })
-
-    const loading = isLoading || isPending
-    const disabled = loading || !Boolean(data?.request)
-
-    useEffect(() => { setHash(hash) }, [setHash, hash])
-
-    return (
-        <Button
-            variant="secondary"
-            className="w-full"
-            disabled={disabled}
-            onClick={() => writeContract(data!.request)}
-        >
-            <Spinner loading={loading} /> <span>Bridge</span>
-        </Button>
-    )
+    if (version === "v2") {
+        return <BridgeButtonV1 amount={amount} setHash={setHash} reset={reset} />
+    }
 }

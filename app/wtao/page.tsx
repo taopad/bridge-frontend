@@ -1,6 +1,6 @@
 import { BridgeLayout } from "@/components/BridgeLayout"
 import { BridgeCard } from "@/components/BridgeCard/BridgeCard"
-import { BridgeFormV1 } from "@/components/BridgeCard/BridgeFormV1"
+import { BridgeForm } from "@/components/BridgeCard/BridgeForm"
 import { NetworkCard } from "@/components/NetworkCard/NetworkCard"
 import { TokenAddresses } from "@/components/TokenAddresses"
 
@@ -11,7 +11,7 @@ export default function wTao() {
         <BridgeLayout token="wtao">
             <NetworkCard />
             <BridgeCard name={name}>
-                <BridgeFormV1 />
+                <BridgeForm version="v1" />
             </BridgeCard>
             <TokenAddresses name={name} />
         </BridgeLayout>
