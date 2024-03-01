@@ -15,6 +15,7 @@ import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 import { Spinner } from "@/components/Spinner"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { MaxButton } from "./MaxButton"
 import { SourceNativeFeeV1 } from "./SourceNativeFeeV1"
 import { SourceNativeBalance } from "./SourceNativeBalance"
 import OftV1Abi from "@/config/abi/OftV1"
@@ -137,33 +138,13 @@ export function BridgeFormV1() {
     )
 }
 
-function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
-    const hasMounted = useHasMounted()
-    const sourceTokenBalance = useSourceTokenBalance()
-
-    const balance = sourceTokenBalance.data?.value ?? 0n
-
-    const disabled = !hasMounted || !sourceTokenBalance.isSuccess
-
-    return (
-        <Button
-            variant="secondary"
-            disabled={disabled}
-            onClick={() => setAmount(balance)}
-            className="w-16"
-        >
-            Max
-        </Button>
-    )
-}
-
 function SubmitButton({ amount, setHash, reset }: {
     amount: bigint
     setHash: (hash: `0x${string}` | undefined) => void
     reset: () => void
 }) {
     const hasMounted = useHasMounted()
-    const { isConnected, address } = useAccount()
+    const { isConnected } = useAccount()
 
     const hooks = {
         fee: useEstimateSendFeeV1(amount),
