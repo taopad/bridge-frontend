@@ -200,7 +200,7 @@ function SubmitButton({ amount, setHash, reset }: {
 
     if (insufficientTokenBalance) {
         return (
-            <Button variant="secondary" disabled>
+            <Button variant="secondary" className="w-full" disabled>
                 Ins. balance
             </Button>
         )
@@ -208,7 +208,7 @@ function SubmitButton({ amount, setHash, reset }: {
 
     if (insufficientNativeBalance) {
         return (
-            <Button variant="secondary" disabled>
+            <Button variant="secondary" className="w-full" disabled>
                 Ins. balance
             </Button>
         )
@@ -240,6 +240,7 @@ function ApproveButton() {
     return (
         <Button
             variant="secondary"
+            className="w-full"
             disabled={disabled}
             onClick={() => writeContract(data!.request)}
         >
@@ -271,6 +272,7 @@ function BridgeButton({ amount, setHash, reset }: {
     return (
         <Button
             variant="secondary"
+            className="w-full"
             disabled={disabled}
             onClick={() => writeContract(data!.request)}
         >

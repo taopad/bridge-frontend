@@ -4,7 +4,7 @@ import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { TokenAddress } from "@/components/TokenAddress"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
-export function TokenAddresses() {
+export function TokenAddresses({ name }: { name: string }) {
     const { tokenConfigList } = useTokenConfig()
 
     if (tokenConfigList === undefined) {
@@ -13,7 +13,7 @@ export function TokenAddresses() {
 
     return (
         <Card className="bg-black">
-            <CardHeader>wTao token addresses:</CardHeader>
+            <CardHeader>{name} token addresses:</CardHeader>
             <CardContent>
                 {Object.values(tokenConfigList).map(token => (
                     <TokenAddress key={token.info.chain.id} token={token} />

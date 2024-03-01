@@ -14,11 +14,11 @@ export function NetworkCard() {
                 <div className="flex flex-col gap-4 lg:flex-row">
                     <div className="flex flex-col gap-4 flex-1 text-center">
                         <SourceChainButton />
-                        <SourceTokenBalance />
+                        <SourceTokenBalance>Select source chain</SourceTokenBalance>
                     </div>
                     <div className="flex flex-col gap-4 flex-1 text-center">
                         <TargetChainSelector />
-                        <TargetTokenBalance />
+                        <TargetTokenBalance>Select target chain</TargetTokenBalance>
                     </div>
                 </div>
             </CardContent>
