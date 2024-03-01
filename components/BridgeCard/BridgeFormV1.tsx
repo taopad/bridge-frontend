@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 
-import { erc20Abi, pad } from "viem"
+import { pad } from "viem"
 import { useState, useEffect } from "react"
 import { useAccount, useSimulateContract, useWriteContract } from "wagmi"
 import { useAllowance } from "@/hooks/useAllowance"
@@ -16,32 +16,13 @@ import { Spinner } from "@/components/Spinner"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { MaxButton } from "./MaxButton"
+import { ApproveButton } from "./ApproveButton"
 import { SourceNativeFeeV1 } from "./SourceNativeFeeV1"
 import { SourceNativeBalance } from "./SourceNativeBalance"
 import OftV1Abi from "@/config/abi/OftV1"
 
 const nullAddress = "0x0000000000000000000000000000000000000000"
 const layerzeroscan = "https://layerzeroscan.com/tx"
-
-function useSimulateApprove() {
-    const { sourceToken } = useTokenConfig()
-    const { isConnected, address } = useAccount()
-
-    const sourceOftAddress = sourceToken?.oft ?? "0x"
-    const sourceTokenAddress = sourceToken?.token ?? "0x"
-
-    return useSimulateContract({
-        abi: erc20Abi,
-        address: sourceTokenAddress,
-        functionName: "approve",
-        args: [sourceOftAddress, BigInt(2 ** (256 - 1))],
-        account: address,
-        scopeKey: address,
-        query: {
-            enabled: isConnected && sourceToken != undefined,
-        },
-    })
-}
 
 function useSimulateBridge(amount: bigint) {
     const { isConnected, address } = useAccount()
@@ -200,34 +181,6 @@ function SubmitButton({ amount, setHash, reset }: {
     }
 
     return <BridgeButton amount={amount} setHash={setHash} reset={reset} />
-}
-
-function ApproveButton() {
-    const allowance = useAllowance()
-
-    const { data, isLoading } = useSimulateApprove()
-
-    const { writeContract, isPending } = useWriteContract({
-        mutation: {
-            onSuccess: () => {
-                allowance.refetch()
-            }
-        }
-    })
-
-    const loading = isLoading || isPending
-    const disabled = loading || !Boolean(data?.request)
-
-    return (
-        <Button
-            variant="secondary"
-            className="w-full"
-            disabled={disabled}
-            onClick={() => writeContract(data!.request)}
-        >
-            <Spinner loading={loading} /> <span>Approve</span>
-        </Button>
-    )
 }
 
 function BridgeButton({ amount, setHash, reset }: {
