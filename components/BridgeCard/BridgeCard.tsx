@@ -1,9 +1,8 @@
-import { BridgeForm } from "./BridgeForm"
 import { SourceChainName } from "@/components/SourceChainName"
 import { TargetChainName } from "@/components/TargetChainName"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
-export function BridgeCard({ name }: { name: string }) {
+export function BridgeCard({ name, children }: { name: string, children: React.ReactNode }) {
     return (
         <Card className="card bg-black">
             <CardHeader>
@@ -12,7 +11,7 @@ export function BridgeCard({ name }: { name: string }) {
                 </div>
             </CardHeader>
             <CardContent>
-                <BridgeForm />
+                {children}
             </CardContent>
         </Card>
     );

@@ -1,20 +1,20 @@
 import { pad } from "viem"
 import { useAccount, useReadContract } from "wagmi"
 import { useTokenConfig } from "./useTokenConfig"
-import OftV2Abi from "@/config/abi/OftV2"
+import OftV1Abi from "@/config/abi/OftV1"
 
-export function useEstimateSendFee(amount: bigint) {
+export function useEstimateSendFeeV1(amount: bigint) {
     const { address } = useAccount()
     const { sourceToken, targetToken } = useTokenConfig()
 
     const targetLzId = targetToken?.info.lzId ?? 0
-    const adapterParams = targetToken?.info.adapterParams ?? "0x"
+    const adapterParams = targetToken?.adapterParams ?? "0x"
     const address32Bytes = address ? pad(address) : "0x"
     const sourceOftAddress = sourceToken?.oft ?? "0x"
     const sourceTokenChainId = sourceToken?.info.chain.id
 
     return useReadContract({
-        abi: OftV2Abi,
+        abi: OftV1Abi,
         address: sourceOftAddress,
         chainId: sourceTokenChainId,
         functionName: "estimateSendFee",
@@ -22,7 +22,7 @@ export function useEstimateSendFee(amount: bigint) {
         scopeKey: address,
         query: {
             enabled: targetToken != undefined && amount > 0,
-            select: (data) => data[0],
+            select: (data) => data[0], // estimateSendFee() returns an array
         },
     })
 }

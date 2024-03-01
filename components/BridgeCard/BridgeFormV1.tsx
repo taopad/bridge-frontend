@@ -9,15 +9,15 @@ import { useAllowance } from "@/hooks/useAllowance"
 import { useHasMounted } from "@/hooks/useHasMounted"
 import { useBigintInput } from "@/hooks/useBigintInput"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
-import { useEstimateSendFee } from "@/hooks/useEstimateSendFee"
+import { useEstimateSendFeeV1 } from "@/hooks/useEstimateSendFeeV1"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 import { Spinner } from "@/components/Spinner"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { SourceNativeFee } from "./SourceNativeFee"
+import { SourceNativeFeeV1 } from "./SourceNativeFeeV1"
 import { SourceNativeBalance } from "./SourceNativeBalance"
-import OftV2Abi from "@/config/abi/OftV2"
+import OftV1Abi from "@/config/abi/OftV1"
 
 const nullAddress = "0x0000000000000000000000000000000000000000"
 const layerzeroscan = "https://layerzeroscan.com/tx"
@@ -47,14 +47,14 @@ function useSimulateBridge(amount: bigint) {
     const { sourceToken, targetToken } = useTokenConfig()
 
     const hooks = {
-        fee: useEstimateSendFee(amount),
+        fee: useEstimateSendFeeV1(amount),
         allowance: useAllowance(),
         sourceTokenBalance: useSourceTokenBalance(),
         sourceNativeBalance: useSourceNativeBalance(),
     }
 
     const lzId = targetToken?.info.lzId ?? 0
-    const adapterParams = targetToken?.info.adapterParams ?? "0x"
+    const adapterParams = targetToken?.adapterParams ?? "0x"
     const address32Bytes = address ? pad(address) : "0x"
     const sourceOftAddress = sourceToken?.oft ?? "0x"
     const fee = hooks.fee.data ?? 0n
@@ -63,7 +63,7 @@ function useSimulateBridge(amount: bigint) {
     const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
 
     return useSimulateContract({
-        abi: OftV2Abi,
+        abi: OftV1Abi,
         address: sourceOftAddress,
         functionName: "sendFrom",
         args: [address ?? "0x", lzId, address32Bytes, amount, {
@@ -90,7 +90,7 @@ function useSimulateBridge(amount: bigint) {
     })
 }
 
-export function BridgeForm() {
+export function BridgeFormV1() {
     const [hash, setHash] = useState<`0x${string}`>()
     const sourceTokenBalance = useSourceTokenBalance()
 
@@ -123,7 +123,7 @@ export function BridgeForm() {
             </div>
             <div className="flex flex-col gap-4 justify-between lg:flex-row">
                 <span>Native token balance: <SourceNativeBalance /></span>
-                <span>Bridge fee: <SourceNativeFee amount={amount.value} /></span>
+                <span>Bridge fee: <SourceNativeFeeV1 amount={amount.value} /></span>
             </div>
             {hash && (
                 <div>
@@ -166,7 +166,7 @@ function SubmitButton({ amount, setHash, reset }: {
     const { isConnected, address } = useAccount()
 
     const hooks = {
-        fee: useEstimateSendFee(amount),
+        fee: useEstimateSendFeeV1(amount),
         allowance: useAllowance(),
         sourceTokenBalance: useSourceTokenBalance(),
         sourceNativeBalance: useSourceNativeBalance(),
