@@ -1,20 +1,15 @@
 import { erc20Abi } from "viem"
-import { useEffect } from "react"
-import { useAccount, useBlockNumber, useReadContracts } from "wagmi"
+import { useAccount, useReadContracts } from "wagmi"
 import { useTokenConfig } from "./useTokenConfig"
 
 export function useSourceTokenBalance() {
     const { sourceToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
-    const { data: blockNumber } = useBlockNumber({
-        chainId: sourceToken?.info.chain.id,
-        watch: true,
-    })
 
     const sourceTokenChainId = sourceToken?.info.chain.id
     const sourceTokenAddress = sourceToken?.token ?? "0x"
 
-    const hook = useReadContracts({
+    return useReadContracts({
         allowFailure: false,
         contracts: [
             {
@@ -46,8 +41,4 @@ export function useSourceTokenBalance() {
             })
         },
     })
-
-    useEffect(() => { hook.refetch() }, [blockNumber])
-
-    return hook
 }

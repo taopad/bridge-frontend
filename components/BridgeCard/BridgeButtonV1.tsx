@@ -65,27 +65,28 @@ export function BridgeButtonV1({ amount, setHash, reset }: {
     setHash: (hash: `0x${string}` | undefined) => void
     reset: () => void
 }) {
-    const { data, isLoading } = useSimulateBridge(amount)
+    const sourceTokenBalance = useSourceTokenBalance()
 
-    const { writeContract, isPending, data: hash } = useWriteContract({
-        mutation: {
-            onSuccess: () => {
-                reset()
-            }
-        }
-    })
+    const { data, isLoading } = useSimulateBridge(amount)
+    const { writeContract, isPending, data: hash } = useWriteContract()
+
+    useEffect(() => { setHash(hash) }, [setHash, hash])
 
     const loading = isLoading || isPending
     const disabled = loading || !Boolean(data?.request)
 
-    useEffect(() => { setHash(hash) }, [setHash, hash])
-
     return (
         <Button
+            type="button"
             variant="secondary"
             className="w-full"
             disabled={disabled}
-            onClick={() => writeContract(data!.request)}
+            onClick={() => writeContract(data!.request, {
+                onSuccess: () => {
+                    reset()
+                    sourceTokenBalance.refetch()
+                }
+            })}
         >
             <Spinner loading={loading} /> <span>Bridge</span>
         </Button>

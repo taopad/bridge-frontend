@@ -29,24 +29,20 @@ export function ApproveButton() {
     const allowance = useAllowance()
 
     const { data, isLoading } = useSimulateApprove()
-
-    const { writeContract, isPending } = useWriteContract({
-        mutation: {
-            onSuccess: () => {
-                allowance.refetch()
-            }
-        }
-    })
+    const { writeContract, isPending } = useWriteContract()
 
     const loading = isLoading || isPending
     const disabled = loading || !Boolean(data?.request)
 
     return (
         <Button
+            type="button"
             variant="secondary"
             className="w-full"
             disabled={disabled}
-            onClick={() => writeContract(data!.request)}
+            onClick={() => writeContract(data!.request, {
+                onSuccess: () => allowance.refetch()
+            })}
         >
             <Spinner loading={loading} /> <span>Approve</span>
         </Button>

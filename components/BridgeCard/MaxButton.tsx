@@ -12,6 +12,7 @@ export function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }
 
     return (
         <Button
+            type="button"
             variant="secondary"
             disabled={disabled}
             onClick={() => setAmount(balance)}
