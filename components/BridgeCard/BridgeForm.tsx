@@ -3,19 +3,15 @@
 import Link from "next/link"
 
 import { useState } from "react"
-import { useAccount } from "wagmi"
-import { useAllowance } from "@/hooks/useAllowance"
 import { useBigintInput } from "@/hooks/useBigintInput"
-import { useEstimateSendFeeV1 } from "@/hooks/useEstimateSendFeeV1"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
-import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { MaxButton } from "./MaxButton"
-import { ApproveButton } from "./ApproveButton"
+import { BridgeButtonV1 } from "./BridgeButtonV1"
 import { SourceNativeFeeV1 } from "./SourceNativeFeeV1"
 import { SourceNativeBalance } from "./SourceNativeBalance"
-import { BridgeButtonV1 } from "./BridgeButtonV1"
+import { RocketIcon } from "@radix-ui/react-icons"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 type LzVersion = "v1" | "v2"
 
@@ -45,7 +41,7 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                     </div>
                 </div>
                 <div>
-                    <SubmitButton
+                    <BridgeButton
                         version={version}
                         amount={amount.value}
                         setHash={setHash}
@@ -58,12 +54,18 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                 <span>Bridge fee: <SourceNativeFee version={version} amount={amount.value} /></span>
             </div>
             {hash && (
-                <div>
-                    See tx on explorer:{" "}
-                    <Link href={`${layerzeroscan}/${hash}`} target="_blank">
-                        {hash}
-                    </Link>
-                </div>
+                <Alert>
+                    <RocketIcon className="h-4 w-4" />
+                    <AlertTitle>Transaction is sent</AlertTitle>
+                    <AlertDescription>
+                        <p className="truncate ...">
+                            See tx on LayerZeroScan:{" "}
+                            <Link href={`${layerzeroscan}/${hash}`} target="_blank">
+                                {hash}
+                            </Link>
+                        </p>
+                    </AlertDescription>
+                </Alert>
             )}
         </div>
     )
@@ -79,64 +81,12 @@ function SourceNativeFee({ version, amount }: { version: LzVersion, amount: bigi
     }
 }
 
-function SubmitButton({ version, amount, setHash, reset }: {
+function BridgeButton({ version, amount, setHash, reset }: {
     version: LzVersion
     amount: bigint
     setHash: (hash: `0x${string}` | undefined) => void
     reset: () => void
 }) {
-    const { isConnected } = useAccount()
-
-    const hooks = {
-        fee: useEstimateSendFeeV1(amount),
-        allowance: useAllowance(),
-        sourceTokenBalance: useSourceTokenBalance(),
-        sourceNativeBalance: useSourceNativeBalance(),
-    }
-
-    const fee = hooks.fee.data ?? 0n
-    const allowance = hooks.allowance.data ?? 0n
-    const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
-    const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
-    const insufficientTokenBalance = amount > sourceTokenBalance
-    const insufficientNativeBalance = fee > sourceNativeBalance
-    const insufficientAllowance = amount > allowance
-
-    const loaded = isConnected
-        && hooks.fee.isSuccess
-        && hooks.allowance.isSuccess
-        && hooks.sourceTokenBalance.isSuccess
-        && hooks.sourceNativeBalance.isSuccess
-        && amount > 0
-
-    if (!loaded) {
-        return (
-            <Button className="w-48" variant="secondary" disabled>
-                Bridge
-            </Button>
-        )
-    }
-
-    if (insufficientTokenBalance) {
-        return (
-            <Button className="w-48" variant="secondary" disabled>
-                Ins. balance
-            </Button>
-        )
-    }
-
-    if (insufficientNativeBalance) {
-        return (
-            <Button className="w-48" variant="secondary" disabled>
-                Ins. balance
-            </Button>
-        )
-    }
-
-    if (insufficientAllowance) {
-        return <ApproveButton amount={amount} />
-    }
-
     if (version === "v1") {
         return <BridgeButtonV1 amount={amount} setHash={setHash} reset={reset} />
     }
