@@ -1,6 +1,6 @@
 import { pad } from "viem"
 import { useEffect } from "react"
-import { useAccount, useSimulateContract, useWriteContract } from "wagmi"
+import { useAccount, useSimulateContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
 import { useAllowance } from "@/hooks/useAllowance"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { useEstimateSendFeeV1 } from "@/hooks/useEstimateSendFeeV1"
@@ -27,6 +27,7 @@ function useSimulateBridge(amount: bigint) {
     const adapterParams = targetToken?.adapterParams ?? "0x"
     const address32Bytes = address ? pad(address) : "0x"
     const sourceOftAddress = sourceToken?.oft ?? "0x"
+    const sourceOftChainId = sourceToken?.info.chain.id ?? 0
     const fee = hooks.fee.data ?? 0n
     const allowance = hooks.allowance.data ?? 0n
     const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
@@ -35,6 +36,7 @@ function useSimulateBridge(amount: bigint) {
     return useSimulateContract({
         abi: OftV1Abi,
         address: sourceOftAddress,
+        chainId: sourceOftChainId,
         functionName: "sendFrom",
         args: [address ?? "0x", lzId, address32Bytes, amount, {
             refundAddress: address ?? "0x",
@@ -65,15 +67,19 @@ export function BridgeButtonV1({ amount, setHash, reset }: {
     setHash: (hash: `0x${string}` | undefined) => void
     reset: () => void
 }) {
+    const { sourceToken } = useTokenConfig()
     const sourceTokenBalance = useSourceTokenBalance()
 
+    const chainId = sourceToken?.info.chain.id ?? 0
+
     const { data, isLoading } = useSimulateBridge(amount)
-    const { writeContract, isPending, data: hash } = useWriteContract()
+    const { data: hash, isPending, writeContract } = useWriteContract()
+    const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash, chainId, confirmations: 1 })
 
     useEffect(() => { setHash(hash) }, [setHash, hash])
 
-    const loading = isLoading || isPending
-    const disabled = loading || !Boolean(data?.request)
+    const loading = isLoading || isPending || isConfirming
+    const disabled = amount === 0n || loading || !Boolean(data?.request)
 
     return (
         <Button

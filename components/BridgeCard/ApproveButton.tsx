@@ -1,5 +1,5 @@
 import { erc20Abi } from "viem"
-import { useAccount, useSimulateContract, useWriteContract } from "wagmi"
+import { useAccount, useSimulateContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
 import { useAllowance } from "@/hooks/useAllowance"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { Spinner } from "@/components/Spinner"
@@ -11,10 +11,12 @@ function useSimulateApprove(amount: bigint) {
 
     const sourceOftAddress = sourceToken?.oft ?? "0x"
     const sourceTokenAddress = sourceToken?.token ?? "0x"
+    const sourceTokenChainId = sourceToken?.info.chain.id ?? 0
 
     return useSimulateContract({
         abi: erc20Abi,
         address: sourceTokenAddress,
+        chainId: sourceTokenChainId,
         functionName: "approve",
         args: [sourceOftAddress, amount],
         account: address,
@@ -29,11 +31,15 @@ function useSimulateApprove(amount: bigint) {
 
 export function ApproveButton({ amount }: { amount: bigint }) {
     const allowance = useAllowance()
+    const { sourceToken } = useTokenConfig()
+
+    const chainId = sourceToken?.info.chain.id ?? 0
 
     const { data, isLoading } = useSimulateApprove(amount)
-    const { writeContract, isPending } = useWriteContract()
+    const { data: hash, isPending, writeContract } = useWriteContract()
+    const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash, chainId, confirmations: 1 })
 
-    const loading = isLoading || isPending
+    const loading = isLoading || isPending || isConfirming
     const disabled = loading || !Boolean(data?.request)
 
     return (

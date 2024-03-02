@@ -102,13 +102,12 @@ function SubmitButton({ version, amount, setHash, reset }: {
     const insufficientNativeBalance = fee > sourceNativeBalance
     const insufficientAllowance = amount > allowance
 
-    const loaded =
-        isConnected &&
-        hooks.fee.isSuccess &&
-        hooks.allowance.isSuccess &&
-        hooks.sourceTokenBalance.isSuccess &&
-        hooks.sourceNativeBalance.isSuccess &&
-        amount > 0
+    const loaded = isConnected
+        && hooks.fee.isSuccess
+        && hooks.allowance.isSuccess
+        && hooks.sourceTokenBalance.isSuccess
+        && hooks.sourceNativeBalance.isSuccess
+        && amount > 0
 
     if (!loaded) {
         return (
