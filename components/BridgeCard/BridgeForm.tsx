@@ -135,7 +135,7 @@ function SubmitButton({ version, amount, setHash, reset }: {
     }
 
     if (insufficientAllowance) {
-        return <ApproveButton />
+        return <ApproveButton amount={amount} />
     }
 
     if (version === "v1") {

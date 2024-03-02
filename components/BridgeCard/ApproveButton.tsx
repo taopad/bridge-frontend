@@ -5,7 +5,7 @@ import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { Spinner } from "@/components/Spinner"
 import { Button } from "@/components/ui/button"
 
-function useSimulateApprove() {
+function useSimulateApprove(amount: bigint) {
     const { sourceToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
 
@@ -16,19 +16,21 @@ function useSimulateApprove() {
         abi: erc20Abi,
         address: sourceTokenAddress,
         functionName: "approve",
-        args: [sourceOftAddress, BigInt(2 ** (256 - 1))],
+        args: [sourceOftAddress, amount],
         account: address,
         scopeKey: address,
         query: {
-            enabled: isConnected && sourceToken != undefined,
+            enabled: isConnected
+                && sourceToken != undefined
+                && amount > 0,
         },
     })
 }
 
-export function ApproveButton() {
+export function ApproveButton({ amount }: { amount: bigint }) {
     const allowance = useAllowance()
 
-    const { data, isLoading } = useSimulateApprove()
+    const { data, isLoading } = useSimulateApprove(amount)
     const { writeContract, isPending } = useWriteContract()
 
     const loading = isLoading || isPending
