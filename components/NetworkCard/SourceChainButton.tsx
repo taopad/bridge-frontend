@@ -4,26 +4,15 @@ import Image from "next/image"
 
 import { useAccount } from "wagmi"
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit"
-import { useHasMounted } from "@/hooks/useHasMounted"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/Spinner"
 
 export function SourceChainButton() {
-    const hasMounted = useHasMounted()
-
     const { isConnected } = useAccount()
     const { sourceToken } = useTokenConfig()
     const { openChainModal } = useChainModal()
     const { openConnectModal } = useConnectModal()
-
-    if (!hasMounted) {
-        return (
-            <Button className="w-full" disabled>
-                <Spinner /> Connect wallet
-            </Button>
-        )
-    }
 
     if (!isConnected) {
         return (

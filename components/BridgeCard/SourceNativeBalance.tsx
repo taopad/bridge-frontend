@@ -1,14 +1,12 @@
 "use client"
 
-import { useHasMounted } from "@/hooks/useHasMounted"
-import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 import { formatAmount } from "@/utils/formatAmount"
+import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 
 export function SourceNativeBalance() {
-    const hasMounted = useHasMounted()
     const balance = useSourceNativeBalance()
 
-    if (!hasMounted || !balance.isSuccess || balance.data === undefined) {
+    if (!balance.isSuccess || balance.data === undefined) {
         return <span>-</span>
     }
 

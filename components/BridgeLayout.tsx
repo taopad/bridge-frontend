@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { headers } from "next/headers"
 import { Navbar } from "@/components/Navbar"
 import { WalletProvider } from "@/components/WalletProvider"
 import { TokenConfigProvider } from "@/components/TokenConfigProvider"
@@ -7,8 +8,10 @@ import { buttonVariants } from "@/components/ui/button"
 type TokenType = "wtao" | "tbank"
 
 export function BridgeLayout({ token, children }: { token: TokenType, children: React.ReactNode }) {
+    const cookie = headers().get("cookie")
+
     return (
-        <WalletProvider token={token}>
+        <WalletProvider token={token} cookie={cookie}>
             <TokenConfigProvider token={token}>
                 <div className="flex flex-col gap-4">
                     <Navbar />

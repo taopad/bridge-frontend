@@ -1,14 +1,12 @@
-import { useHasMounted } from "@/hooks/useHasMounted"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { Button } from "@/components/ui/button"
 
 export function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
-    const hasMounted = useHasMounted()
     const sourceTokenBalance = useSourceTokenBalance()
 
     const balance = sourceTokenBalance.data?.value ?? 0n
 
-    const disabled = !hasMounted || !sourceTokenBalance.isSuccess
+    const disabled = !sourceTokenBalance.isSuccess
 
     return (
         <Button

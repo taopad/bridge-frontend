@@ -1,16 +1,14 @@
 "use client"
 
 import { Select } from "@radix-ui/react-select"
-import { useHasMounted } from "@/hooks/useHasMounted"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { TokenConfig } from "@/config/tokens"
 
 export function TargetChainSelector() {
-    const hasMounted = useHasMounted()
     const { targetToken, tokenConfigList, setTargetChainId } = useTokenConfig()
 
-    if (!hasMounted || tokenConfigList === undefined) {
+    if (tokenConfigList === undefined) {
         return null
     }
 

@@ -2,15 +2,13 @@
 
 import { useAccount } from "wagmi"
 import { formatUnits } from "viem"
-import { useHasMounted } from "@/hooks/useHasMounted"
 import { useTargetTokenBalance } from "@/hooks/useTargetTokenBalance"
 
 export function TargetTokenBalance({ children }: { children: string }) {
-    const hasMounted = useHasMounted()
-    const balance = useTargetTokenBalance()
     const { isConnected } = useAccount()
+    const balance = useTargetTokenBalance()
 
-    if (!hasMounted || !isConnected) {
+    if (!isConnected) {
         return <span>-</span>
     }
 

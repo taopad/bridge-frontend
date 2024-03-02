@@ -38,7 +38,7 @@ export function ApproveButton() {
         <Button
             type="button"
             variant="secondary"
-            className="w-full"
+            className="w-48"
             disabled={disabled}
             onClick={() => writeContract(data!.request, {
                 onSuccess: () => allowance.refetch()

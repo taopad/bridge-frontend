@@ -4,20 +4,17 @@ import { useAccount } from "wagmi"
 import { useAccountModal, useChainModal, useConnectModal } from "@rainbow-me/rainbowkit"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/Spinner"
-import { useHasMounted } from "@/hooks/useHasMounted"
 
 export function WalletButton() {
-    const hasMounted = useHasMounted()
-
     const { openChainModal } = useChainModal()
     const { openConnectModal } = useConnectModal()
     const { openAccountModal } = useAccountModal()
-    const { isConnected, chain, address } = useAccount()
+    const { isConnected, isConnecting, isReconnecting, chain, address } = useAccount()
 
-    if (!hasMounted) {
+    if (isConnecting || isReconnecting) {
         return (
             <Button className="w-48" disabled>
-                <Spinner /> Connect wallet
+                <Spinner /> Connecting
             </Button>
         )
     }

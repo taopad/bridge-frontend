@@ -5,7 +5,6 @@ import Link from "next/link"
 import { useState } from "react"
 import { useAccount } from "wagmi"
 import { useAllowance } from "@/hooks/useAllowance"
-import { useHasMounted } from "@/hooks/useHasMounted"
 import { useBigintInput } from "@/hooks/useBigintInput"
 import { useEstimateSendFeeV1 } from "@/hooks/useEstimateSendFeeV1"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
@@ -86,7 +85,6 @@ function SubmitButton({ version, amount, setHash, reset }: {
     setHash: (hash: `0x${string}` | undefined) => void
     reset: () => void
 }) {
-    const hasMounted = useHasMounted()
     const { isConnected } = useAccount()
 
     const hooks = {
@@ -105,7 +103,6 @@ function SubmitButton({ version, amount, setHash, reset }: {
     const insufficientAllowance = amount > allowance
 
     const loaded =
-        hasMounted &&
         isConnected &&
         hooks.fee.isSuccess &&
         hooks.allowance.isSuccess &&
@@ -115,7 +112,7 @@ function SubmitButton({ version, amount, setHash, reset }: {
 
     if (!loaded) {
         return (
-            <Button disabled variant="secondary" className="w-full">
+            <Button className="w-48" variant="secondary" disabled>
                 Bridge
             </Button>
         )
@@ -123,7 +120,7 @@ function SubmitButton({ version, amount, setHash, reset }: {
 
     if (insufficientTokenBalance) {
         return (
-            <Button variant="secondary" className="w-full" disabled>
+            <Button className="w-48" variant="secondary" disabled>
                 Ins. balance
             </Button>
         )
@@ -131,7 +128,7 @@ function SubmitButton({ version, amount, setHash, reset }: {
 
     if (insufficientNativeBalance) {
         return (
-            <Button variant="secondary" className="w-full" disabled>
+            <Button className="w-48" variant="secondary" disabled>
                 Ins. balance
             </Button>
         )
