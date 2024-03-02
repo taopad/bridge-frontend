@@ -6,7 +6,6 @@ import { useAccount } from "wagmi"
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/Spinner"
 
 export function SourceChainButton() {
     const { isConnected } = useAccount()
@@ -36,10 +35,10 @@ export function SourceChainButton() {
                 className="h-6 w-6"
                 width={1}
                 height={1}
-                src={`/logos/${sourceToken.info.logo}.svg`}
-                alt={sourceToken.info.chain.name}
+                src={`/logos/${sourceToken.logo}`}
+                alt={sourceToken.chain.name}
             />
-            <div className="flex-1">{sourceToken.info.chain.name}</div>
+            <div className="flex-1">{sourceToken.chain.name}</div>
         </Button>
     )
 }

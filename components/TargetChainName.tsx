@@ -9,5 +9,5 @@ export function TargetChainName() {
         return null
     }
 
-    return <span>{targetToken.info.chain.name}</span>
+    return <span>{targetToken.chain.name}</span>
 }

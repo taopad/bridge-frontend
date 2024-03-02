@@ -6,16 +6,18 @@ export function useAllowance() {
     const { sourceToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
 
+    const sourceTokenAddress = sourceToken?.token
+    const sourceTokenChainId = sourceToken?.chain.id
+
+    const userAddress = address ?? "0x"
     const sourceOftAddress = sourceToken?.oft ?? "0x"
-    const sourceTokenAddress = sourceToken?.token ?? "0x"
-    const sourceTokenChainId = sourceToken?.info.chain.id
 
     return useReadContract({
         abi: erc20Abi,
         address: sourceTokenAddress,
         chainId: sourceTokenChainId,
         functionName: "allowance",
-        args: [address ?? "0x", sourceOftAddress],
+        args: [userAddress, sourceOftAddress],
         scopeKey: address,
         query: {
             enabled: isConnected && sourceToken != undefined,

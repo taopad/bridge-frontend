@@ -16,7 +16,7 @@ export function TokenAddresses({ name }: { name: string }) {
             <CardHeader>{name} token addresses:</CardHeader>
             <CardContent>
                 {Object.values(tokenConfigList).map(token => (
-                    <TokenAddress key={token.info.chain.id} token={token} />
+                    <TokenAddress key={token.chain.id} token={token} />
                 ))}
             </CardContent>
         </Card>

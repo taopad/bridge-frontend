@@ -7,12 +7,14 @@ export function useTargetTokenBalance() {
     const { targetToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
     const { data: blockNumber } = useBlockNumber({
-        chainId: targetToken?.info.chain.id,
+        chainId: targetToken?.chain.id,
         watch: true,
     })
 
-    const targetTokenAddress = targetToken?.token ?? "0x"
-    const targetTokenChainId = targetToken?.info.chain.id
+    const targetTokenAddress = targetToken?.token
+    const targetTokenChainId = targetToken?.chain.id
+
+    const userAddress = address ?? "0x"
 
     const hook = useReadContracts({
         allowFailure: false,
@@ -34,7 +36,7 @@ export function useTargetTokenBalance() {
                 address: targetTokenAddress,
                 chainId: targetTokenChainId,
                 functionName: "balanceOf",
-                args: [address ?? "0x"],
+                args: [userAddress],
             },
         ],
         query: {

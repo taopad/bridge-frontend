@@ -8,7 +8,9 @@ import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { Input } from "@/components/ui/input"
 import { MaxButton } from "./MaxButton"
 import { BridgeButtonV1 } from "./BridgeButtonV1"
+import { BridgeButtonV2 } from "./BridgeButtonV2"
 import { SourceNativeFeeV1 } from "./SourceNativeFeeV1"
+import { SourceNativeFeeV2 } from "./SourceNativeFeeV2"
 import { SourceNativeBalance } from "./SourceNativeBalance"
 import { RocketIcon } from "@radix-ui/react-icons"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -77,7 +79,7 @@ function SourceNativeFee({ version, amount }: { version: LzVersion, amount: bigi
     }
 
     if (version === "v2") {
-        return <SourceNativeFeeV1 amount={amount} />
+        return <SourceNativeFeeV2 amount={amount} />
     }
 }
 
@@ -92,6 +94,6 @@ function BridgeButton({ version, amount, setHash, reset }: {
     }
 
     if (version === "v2") {
-        return <BridgeButtonV1 amount={amount} setHash={setHash} reset={reset} />
+        return <BridgeButtonV2 amount={amount} setHash={setHash} reset={reset} />
     }
 }

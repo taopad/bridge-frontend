@@ -6,8 +6,10 @@ export function useSourceTokenBalance() {
     const { sourceToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
 
-    const sourceTokenChainId = sourceToken?.info.chain.id
-    const sourceTokenAddress = sourceToken?.token ?? "0x"
+    const sourceTokenAddress = sourceToken?.token
+    const sourceTokenChainId = sourceToken?.chain.id
+
+    const userAddress = address ?? "0x"
 
     return useReadContracts({
         allowFailure: false,
@@ -29,7 +31,7 @@ export function useSourceTokenBalance() {
                 address: sourceTokenAddress,
                 chainId: sourceTokenChainId,
                 functionName: "balanceOf",
-                args: [address ?? "0x"],
+                args: [userAddress],
             },
         ],
         query: {

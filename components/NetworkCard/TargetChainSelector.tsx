@@ -14,7 +14,7 @@ export function TargetChainSelector() {
 
     return (
         <Select
-            value={targetToken?.info.chain.id.toString() ?? ""}
+            value={targetToken?.chain.id.toString() ?? ""}
             onValueChange={chainIdStr => setTargetChainId(parseInt(chainIdStr))}
         >
             <SelectTrigger className="w-full">
@@ -22,7 +22,7 @@ export function TargetChainSelector() {
             </SelectTrigger>
             <SelectContent>
                 {Object.values(tokenConfigList).map(token => (
-                    <Option key={token.info.chain.id} token={token} />
+                    <Option key={token.chain.id} token={token} />
                 ))}
             </SelectContent>
         </Select>
@@ -32,11 +32,11 @@ export function TargetChainSelector() {
 function Option({ token }: { token: TokenConfig }) {
     const { sourceToken } = useTokenConfig()
 
-    const disabled = token.info.chain.id === sourceToken?.info.chain.id
+    const disabled = token.chain.id === sourceToken?.chain.id
 
     return (
-        <SelectItem value={token.info.chain.id.toString()} disabled={disabled}>
-            {token.info.chain.name}
+        <SelectItem value={token.chain.id.toString()} disabled={disabled}>
+            {token.chain.name}
         </SelectItem>
     )
 }

@@ -9,9 +9,10 @@ function useSimulateApprove(amount: bigint) {
     const { sourceToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
 
+    const sourceTokenAddress = sourceToken?.token
+    const sourceTokenChainId = sourceToken?.chain.id
+
     const sourceOftAddress = sourceToken?.oft ?? "0x"
-    const sourceTokenAddress = sourceToken?.token ?? "0x"
-    const sourceTokenChainId = sourceToken?.info.chain.id ?? 0
 
     return useSimulateContract({
         abi: erc20Abi,
@@ -33,7 +34,7 @@ export function ApproveButton({ amount }: { amount: bigint }) {
     const allowance = useAllowance()
     const { sourceToken } = useTokenConfig()
 
-    const chainId = sourceToken?.info.chain.id ?? 0
+    const chainId = sourceToken?.chain.id
 
     const { data, isLoading } = useSimulateApprove(amount)
     const { data: hash, isPending, writeContract } = useWriteContract()

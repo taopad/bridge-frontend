@@ -9,5 +9,5 @@ export function SourceChainName() {
         return null
     }
 
-    return <span>{sourceToken.info.chain.name}</span>
+    return <span>{sourceToken.chain.name}</span>
 }

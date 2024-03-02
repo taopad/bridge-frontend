@@ -3,22 +3,20 @@ import { useEffect } from "react"
 import { useAccount, useSimulateContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
 import { useAllowance } from "@/hooks/useAllowance"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
-import { useEstimateSendFeeV1 } from "@/hooks/useEstimateSendFeeV1"
+import { useEstimateSendFeeV2 } from "@/hooks/useEstimateSendFeeV2"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 import { ApproveButton } from "./ApproveButton"
 import { Spinner } from "@/components/Spinner"
 import { Button } from "@/components/ui/button"
-import OftV1Abi from "@/config/abi/OftV1"
-
-const nullAddress = "0x0000000000000000000000000000000000000000"
+import OftV2Abi from "@/config/abi/OftV2"
 
 function useSimulateBridge(amount: bigint) {
     const { isConnected, address } = useAccount()
     const { sourceToken, targetToken } = useTokenConfig()
 
     const hooks = {
-        fee: useEstimateSendFeeV1(amount),
+        fee: useEstimateSendFeeV2(amount),
         allowance: useAllowance(),
         sourceTokenBalance: useSourceTokenBalance(),
         sourceNativeBalance: useSourceNativeBalance(),
@@ -37,15 +35,19 @@ function useSimulateBridge(amount: bigint) {
     const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
 
     return useSimulateContract({
-        abi: OftV1Abi,
+        abi: OftV2Abi,
         address: sourceOftAddress,
         chainId: sourceOftChainId,
-        functionName: "sendFrom",
-        args: [userAddress, targetLzId, address32Bytes, amount, {
-            refundAddress: userAddress,
-            zroPaymentAddress: nullAddress,
-            adapterParams: adapterParams,
-        }],
+        functionName: "send",
+        args: [{
+            dstEid: targetLzId,
+            to: address32Bytes,
+            amountLD: amount,
+            minAmountLD: amount,
+            extraOptions: adapterParams,
+            composeMsg: "0x",
+            oftCmd: "0x",
+        }, { nativeFee: fee, lzTokenFee: 0n }, userAddress],
         value: fee,
         account: address,
         scopeKey: address,
@@ -65,7 +67,7 @@ function useSimulateBridge(amount: bigint) {
     })
 }
 
-export function BridgeButtonV1({ amount, setHash, reset }: {
+export function BridgeButtonV2({ amount, setHash, reset }: {
     amount: bigint
     setHash: (hash: `0x${string}` | undefined) => void
     reset: () => void
@@ -74,7 +76,7 @@ export function BridgeButtonV1({ amount, setHash, reset }: {
     const { sourceToken } = useTokenConfig()
 
     const hooks = {
-        fee: useEstimateSendFeeV1(amount),
+        fee: useEstimateSendFeeV2(amount),
         allowance: useAllowance(),
         sourceTokenBalance: useSourceTokenBalance(),
         sourceNativeBalance: useSourceNativeBalance(),
