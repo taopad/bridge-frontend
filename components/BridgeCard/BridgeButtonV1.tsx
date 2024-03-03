@@ -108,7 +108,7 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
 
     if (!loaded) {
         return (
-            <Button type="button" variant="secondary" className="w-48" disabled>
+            <Button type="button" variant="secondary" className="w-full lg:w-48" disabled>
                 <Spinner loading={loading} /> <span>Bridge</span>
             </Button>
         )
@@ -116,7 +116,7 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
 
     if (insufficientNativeBalance) {
         return (
-            <Button type="button" variant="secondary" className="w-48" disabled>
+            <Button type="button" variant="secondary" className="w-full lg:w-48" disabled>
                 Ins. balance
             </Button>
         )
@@ -124,7 +124,7 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
 
     if (insufficientTokenBalance) {
         return (
-            <Button type="button" variant="secondary" className="w-48" disabled>
+            <Button type="button" variant="secondary" className="w-full lg:w-48" disabled>
                 Ins. balance
             </Button>
         )
@@ -138,7 +138,7 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
         <Button
             type="button"
             variant="secondary"
-            className="w-48"
+            className="w-full lg:w-48"
             disabled={disabled}
             onClick={() => writeContract(data!.request, { onSuccess })}
         >
