@@ -47,7 +47,7 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                         version={version}
                         amount={amount.value}
                         setHash={setHash}
-                        reset={amount.reset}
+                        onSuccess={amount.reset}
                     />
                 </div>
             </div>
@@ -83,17 +83,17 @@ function SourceNativeFee({ version, amount }: { version: LzVersion, amount: bigi
     }
 }
 
-function BridgeButton({ version, amount, setHash, reset }: {
+function BridgeButton({ version, amount, setHash, onSuccess }: {
     version: LzVersion
     amount: bigint
     setHash: (hash: `0x${string}` | undefined) => void
-    reset: () => void
+    onSuccess: () => void
 }) {
     if (version === "v1") {
-        return <BridgeButtonV1 amount={amount} setHash={setHash} reset={reset} />
+        return <BridgeButtonV1 amount={amount} setHash={setHash} onSuccess={onSuccess} />
     }
 
     if (version === "v2") {
-        return <BridgeButtonV2 amount={amount} setHash={setHash} reset={reset} />
+        return <BridgeButtonV2 amount={amount} setHash={setHash} onSuccess={onSuccess} />
     }
 }

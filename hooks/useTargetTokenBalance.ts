@@ -6,15 +6,16 @@ import { useTokenConfig } from "./useTokenConfig"
 export function useTargetTokenBalance() {
     const { targetToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
-    const { data: blockNumber } = useBlockNumber({
-        chainId: targetToken?.chain.id,
-        watch: true,
-    })
 
     const targetTokenAddress = targetToken?.token
     const targetTokenChainId = targetToken?.chain.id
 
     const userAddress = address ?? "0x"
+
+    const { data: blockNumber } = useBlockNumber({
+        chainId: targetTokenChainId,
+        watch: true,
+    })
 
     const hook = useReadContracts({
         allowFailure: false,

@@ -50,25 +50,25 @@ function useSimulateBridge(amount: bigint) {
         account: address,
         scopeKey: address,
         query: {
-            enabled: isConnected &&
-                sourceToken != undefined &&
-                targetToken != undefined &&
-                hooks.fee.isSuccess &&
-                hooks.allowance.isSuccess &&
-                hooks.sourceTokenBalance.isSuccess &&
-                hooks.sourceNativeBalance.isSuccess &&
-                amount > 0 &&
-                amount <= allowance &&
-                amount <= sourceTokenBalance &&
-                sourceNativeBalance >= fee,
+            enabled: isConnected
+                && sourceToken != undefined
+                && targetToken != undefined
+                && hooks.fee.isSuccess
+                && hooks.allowance.isSuccess
+                && hooks.sourceTokenBalance.isSuccess
+                && hooks.sourceNativeBalance.isSuccess
+                && amount > 0
+                && amount <= allowance
+                && amount <= sourceTokenBalance
+                && sourceNativeBalance >= fee,
         },
     })
 }
 
-export function BridgeButtonV1({ amount, setHash, reset }: {
+export function BridgeButtonV1({ amount, setHash, onSuccess }: {
     amount: bigint
     setHash: (hash: `0x${string}` | undefined) => void
-    reset: () => void
+    onSuccess: () => void
 }) {
     const { isConnected } = useAccount()
     const { sourceToken } = useTokenConfig()
@@ -140,12 +140,7 @@ export function BridgeButtonV1({ amount, setHash, reset }: {
             variant="secondary"
             className="w-48"
             disabled={disabled}
-            onClick={() => writeContract(data!.request, {
-                onSuccess: () => {
-                    reset()
-                    hooks.sourceTokenBalance.refetch()
-                }
-            })}
+            onClick={() => writeContract(data!.request, { onSuccess })}
         >
             <Spinner loading={loading} /> <span>Bridge</span>
         </Button>

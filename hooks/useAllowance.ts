@@ -1,5 +1,6 @@
 import { erc20Abi } from "viem"
-import { useAccount, useReadContract } from "wagmi"
+import { useEffect } from "react"
+import { useAccount, useBlockNumber, useReadContract } from "wagmi"
 import { useTokenConfig } from "./useTokenConfig"
 
 export function useAllowance() {
@@ -12,7 +13,12 @@ export function useAllowance() {
     const userAddress = address ?? "0x"
     const sourceOftAddress = sourceToken?.oft ?? "0x"
 
-    return useReadContract({
+    const { data: blockNumber } = useBlockNumber({
+        chainId: sourceTokenChainId,
+        watch: true,
+    })
+
+    const hook = useReadContract({
         abi: erc20Abi,
         address: sourceTokenAddress,
         chainId: sourceTokenChainId,
@@ -23,4 +29,8 @@ export function useAllowance() {
             enabled: isConnected && sourceToken != undefined,
         },
     })
+
+    useEffect(() => { hook.refetch() }, [blockNumber])
+
+    return hook
 }

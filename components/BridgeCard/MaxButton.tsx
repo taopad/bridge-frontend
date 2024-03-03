@@ -1,5 +1,5 @@
-import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { Button } from "@/components/ui/button"
+import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 
 export function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }) {
     const sourceTokenBalance = useSourceTokenBalance()
@@ -12,9 +12,9 @@ export function MaxButton({ setAmount }: { setAmount: (amount: bigint) => void }
         <Button
             type="button"
             variant="secondary"
+            className="w-16"
             disabled={disabled}
             onClick={() => setAmount(balance)}
-            className="w-16"
         >
             Max
         </Button>
