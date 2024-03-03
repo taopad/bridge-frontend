@@ -18,8 +18,6 @@ const rpcs = {
     [arbitrum.id]: "https://rpc.ankr.com/arbitrum",
 }
 
-const storage = createStorage({ storage: cookieStorage })
-
 const connectors = connectorsForWallets(
     [
         {
@@ -39,24 +37,24 @@ const connectors = connectorsForWallets(
 
 const wtao = createConfig({
     ssr: true,
-    storage,
     connectors,
     chains: [mainnet, arbitrum],
     transports: {
         [mainnet.id]: fallback([http(rpcs[mainnet.id]), http()]),
         [arbitrum.id]: fallback([http(rpcs[arbitrum.id]), http()]),
     },
+    storage: createStorage({ key: "wagmi-wtao", storage: cookieStorage }),
 })
 
 const tbank = createConfig({
     ssr: true,
-    storage,
     connectors,
     chains: [mainnet, arbitrum],
     transports: {
         [mainnet.id]: fallback([http(rpcs[mainnet.id]), http()]),
         [arbitrum.id]: fallback([http(rpcs[arbitrum.id]), http()]),
     },
+    storage: createStorage({ key: "wagmi-tbank", storage: cookieStorage }),
 })
 
 export const configs = { wtao, tbank }
