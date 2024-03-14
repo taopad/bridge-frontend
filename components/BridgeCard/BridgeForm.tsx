@@ -14,6 +14,7 @@ import { SourceNativeFeeV2 } from "./SourceNativeFeeV2"
 import { SourceNativeBalance } from "./SourceNativeBalance"
 import { RocketIcon } from "@radix-ui/react-icons"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { SourceNativeSymbol } from "./SourceNativeSymbol"
 
 type LzVersion = "v1" | "v2"
 
@@ -58,8 +59,8 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                 </div>
             </div>
             <div className="flex flex-col gap-4 justify-between lg:flex-row">
-                <span>Native token balance: <SourceNativeBalance /></span>
-                <span>Bridge fee: <SourceNativeFee version={version} amount={amount.value} /></span>
+                <span>Native token balance: <SourceNativeBalance /> <SourceNativeSymbol /></span>
+                <span>Bridge fee: <SourceNativeFee version={version} amount={amount.value} /> <SourceNativeSymbol /></span>
             </div>
             {hashes.map(hash => (
                 <Alert key={hash}>

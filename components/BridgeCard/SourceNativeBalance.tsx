@@ -5,12 +5,12 @@ import { formatAmount } from "@/lib/utils"
 import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 
 export function SourceNativeBalance() {
-    const sourceNativeTokenBalance = useSourceNativeBalance()
+    const sourceNativeBalance = useSourceNativeBalance()
 
-    const balance = sourceNativeTokenBalance.data?.value ?? 0n
-    const decimals = sourceNativeTokenBalance.data?.decimals ?? 0
+    const balance = sourceNativeBalance.data?.value ?? 0n
+    const decimals = sourceNativeBalance.data?.decimals ?? 0
 
-    if (!sourceNativeTokenBalance.isSuccess) {
+    if (!sourceNativeBalance.isSuccess) {
         return <span>-</span>
     }
 
