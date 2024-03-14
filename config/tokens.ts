@@ -1,10 +1,11 @@
 import { Chain } from "viem"
-import { mainnet, arbitrum } from "viem/chains"
+import { mainnet, arbitrum, base } from "viem/chains"
 
 // all token/oft addresses.
 const WTAO_PROXY_ADDRESS: `0x${string}` = "0x4D9B7203BcF5B226A6f4Dc89DA68E7922bfE1322"
 const WTAO_MAINNET_ADDRESS: `0x${string}` = "0x77E06c9eCCf2E797fd462A92B6D7642EF85b0A44"
 const WTAO_ARBITRUM_ADDRESS: `0x${string}` = "0xa14a26bb46e236da394da6B09a5b4CF737ce707b"
+const WTAO_BASE_ADDRESS: `0x${string}` = "0x9D19e729A1bAAfc87f4BC13FF05ce64EADfb9BbB"
 
 const TBANK_PROXY_ADDRESS: `0x${string}` = "0x1762c17f671FA27cE6C59256f5F28242de9274d0"
 const TBANK_MAINNET_ADDRESS: `0x${string}` = "0x95CcffaE3Eb8767D4a941Ec43280961dde89F4dE"
@@ -42,6 +43,14 @@ const wtao: Record<number, TokenConfig> = {
         // 2M gas for arbitrum as stated in layerzero oft docs.
         adapterParams: adapterParamsV1Arbitrum,
         logo: "arbitrum-arb-logo.svg",
+    },
+    [base.id]: {
+        lzId: 184,
+        chain: base,
+        token: WTAO_BASE_ADDRESS,
+        oft: WTAO_BASE_ADDRESS,
+        adapterParams: adapterParamsV1,
+        logo: "base-logo.svg",
     },
 }
 

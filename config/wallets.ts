@@ -1,4 +1,4 @@
-import { mainnet, arbitrum } from "wagmi/chains"
+import { mainnet, arbitrum, base } from "wagmi/chains"
 import { createConfig, createStorage, cookieStorage, http, fallback } from "wagmi"
 import { connectorsForWallets } from "@rainbow-me/rainbowkit"
 import {
@@ -16,6 +16,7 @@ const projectId = "837b08b6b8d6605f4240190ca6624fa5"
 const rpcs = {
     [mainnet.id]: "https://rpc.ankr.com/eth",
     [arbitrum.id]: "https://rpc.ankr.com/arbitrum",
+    [base.id]: "https://rpc.ankr.com/base",
 }
 
 const connectors = connectorsForWallets(
@@ -38,10 +39,11 @@ const connectors = connectorsForWallets(
 const wtao = createConfig({
     ssr: true,
     connectors,
-    chains: [mainnet, arbitrum],
+    chains: [mainnet, arbitrum, base],
     transports: {
         [mainnet.id]: fallback([http(rpcs[mainnet.id]), http()]),
         [arbitrum.id]: fallback([http(rpcs[arbitrum.id]), http()]),
+        [base.id]: fallback([http(rpcs[base.id]), http()]),
     },
     storage: createStorage({ key: "wagmi-wtao", storage: cookieStorage }),
 })
