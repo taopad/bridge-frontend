@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useBigintInput } from "@/hooks/useBigintInput"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { Input } from "@/components/ui/input"
@@ -20,12 +20,18 @@ type LzVersion = "v1" | "v2"
 const layerzeroscan = "https://layerzeroscan.com/tx"
 
 export function BridgeForm({ version }: { version: LzVersion }) {
-    const [hash, setHash] = useState<`0x${string}`>()
+    const [hashes, setHashes] = useState<`0x${string}`[]>([])
     const sourceTokenBalance = useSourceTokenBalance()
 
     const decimals = sourceTokenBalance.data?.decimals ?? 0
 
     const amount = useBigintInput(0n, decimals)
+
+    const addHash = useCallback((hash: `0x${string}` | undefined) => {
+        if (hash !== undefined) {
+            setHashes(hashes => [hash, ...hashes])
+        }
+    }, [])
 
     return (
         <div className="flex flex-col gap-4">
@@ -46,8 +52,8 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                     <BridgeButton
                         version={version}
                         amount={amount.value}
-                        setHash={setHash}
-                        reset={amount.reset}
+                        addHash={addHash}
+                        onSuccess={amount.reset}
                     />
                 </div>
             </div>
@@ -55,8 +61,8 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                 <span>Native token balance: <SourceNativeBalance /></span>
                 <span>Bridge fee: <SourceNativeFee version={version} amount={amount.value} /></span>
             </div>
-            {hash && (
-                <Alert>
+            {hashes.map(hash => (
+                <Alert key={hash}>
                     <RocketIcon className="h-4 w-4" />
                     <AlertTitle>Transaction is sent</AlertTitle>
                     <AlertDescription>
@@ -68,7 +74,7 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                         </p>
                     </AlertDescription>
                 </Alert>
-            )}
+            ))}
         </div>
     )
 }
@@ -83,17 +89,17 @@ function SourceNativeFee({ version, amount }: { version: LzVersion, amount: bigi
     }
 }
 
-function BridgeButton({ version, amount, setHash, reset }: {
+function BridgeButton({ version, amount, addHash, onSuccess }: {
     version: LzVersion
     amount: bigint
-    setHash: (hash: `0x${string}` | undefined) => void
-    reset: () => void
+    addHash: (hash: `0x${string}` | undefined) => void
+    onSuccess: () => void
 }) {
     if (version === "v1") {
-        return <BridgeButtonV1 amount={amount} setHash={setHash} reset={reset} />
+        return <BridgeButtonV1 amount={amount} addHash={addHash} onSuccess={onSuccess} />
     }
 
     if (version === "v2") {
-        return <BridgeButtonV2 amount={amount} setHash={setHash} reset={reset} />
+        return <BridgeButtonV2 amount={amount} addHash={addHash} onSuccess={onSuccess} />
     }
 }

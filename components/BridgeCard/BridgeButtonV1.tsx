@@ -66,10 +66,10 @@ function useSimulateBridge(amount: bigint) {
     })
 }
 
-export function BridgeButtonV1({ amount, setHash, reset }: {
+export function BridgeButtonV1({ amount, addHash, onSuccess }: {
     amount: bigint
-    setHash: (hash: `0x${string}` | undefined) => void
-    reset: () => void
+    addHash: (hash: `0x${string}` | undefined) => void
+    onSuccess: () => void
 }) {
     const { isConnected } = useAccount()
     const { sourceToken } = useTokenConfig()
@@ -93,10 +93,10 @@ export function BridgeButtonV1({ amount, setHash, reset }: {
     const insufficientAllowance = amount > allowance
 
     const { data, isLoading } = useSimulateBridge(amount)
-    const { data: hash, isPending, writeContract } = useWriteContract()
+    const { data: hash, isPending, writeContract, reset: resetWriteData } = useWriteContract()
     const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash, chainId, confirmations: 1 })
 
-    useEffect(() => { setHash(hash) }, [setHash, hash])
+    useEffect(() => { resetWriteData() }, [resetWriteData, chainId])
 
     const loaded = isConnected
         && hooks.fee.isSuccess
@@ -150,10 +150,12 @@ export function BridgeButtonV1({ amount, setHash, reset }: {
             className="w-full lg:w-48"
             disabled={disabled}
             onClick={() => writeContract(data!.request, {
-                onSuccess: () => {
-                    reset()
-                    hooks.sourceNativeBalance.refetch()
+                onSuccess: (hash) => {
+                    onSuccess()
+                    addHash(hash)
+                    hooks.allowance.refetch()
                     hooks.sourceTokenBalance.refetch()
+                    hooks.sourceNativeBalance.refetch()
                 }
             })}
         >

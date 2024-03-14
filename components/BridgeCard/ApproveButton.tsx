@@ -2,6 +2,7 @@ import { erc20Abi } from "viem"
 import { useAccount, useSimulateContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
 import { useAllowance } from "@/hooks/useAllowance"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
+import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
 import { Spinner } from "@/components/Spinner"
 import { Button } from "@/components/ui/button"
 
@@ -29,6 +30,7 @@ function useSimulateApprove(amount: bigint) {
 
 export function ApproveButton({ amount }: { amount: bigint }) {
     const allowance = useAllowance()
+    const sourceNativeBalance = useSourceNativeBalance()
     const { sourceToken } = useTokenConfig()
 
     const chainId = sourceToken?.chain.id
@@ -47,7 +49,10 @@ export function ApproveButton({ amount }: { amount: bigint }) {
             className="w-full lg:w-48"
             disabled={disabled}
             onClick={() => writeContract(data!.request, {
-                onSuccess: () => { allowance.refetch() }
+                onSuccess: () => {
+                    allowance.refetch()
+                    sourceNativeBalance.refetch()
+                }
             })}
         >
             <Spinner loading={loading} /> <span>Approve</span>
