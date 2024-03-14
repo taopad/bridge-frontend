@@ -6,13 +6,15 @@ import { Spinner } from "@/components/Spinner"
 import { Button } from "@/components/ui/button"
 
 function useSimulateApprove(amount: bigint) {
+    const { address } = useAccount()
     const { sourceToken } = useTokenConfig()
-    const { isConnected, address } = useAccount()
 
     const sourceTokenAddress = sourceToken?.token
     const sourceTokenChainId = sourceToken?.chain.id
 
     const sourceOftAddress = sourceToken?.oft ?? "0x"
+
+    const enabled = amount > 0
 
     return useSimulateContract({
         abi: erc20Abi,
@@ -21,12 +23,7 @@ function useSimulateApprove(amount: bigint) {
         functionName: "approve",
         args: [sourceOftAddress, amount],
         account: address,
-        scopeKey: address,
-        query: {
-            enabled: isConnected
-                && sourceToken != undefined
-                && amount > 0,
-        },
+        query: { enabled },
     })
 }
 
@@ -50,7 +47,7 @@ export function ApproveButton({ amount }: { amount: bigint }) {
             className="w-full lg:w-48"
             disabled={disabled}
             onClick={() => writeContract(data!.request, {
-                onSuccess: () => allowance.refetch()
+                onSuccess: () => { allowance.refetch() }
             })}
         >
             <Spinner loading={loading} /> <span>Approve</span>

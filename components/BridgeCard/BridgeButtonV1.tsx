@@ -14,7 +14,7 @@ import OftV1Abi from "@/config/abi/OftV1"
 const nullAddress = "0x0000000000000000000000000000000000000000"
 
 function useSimulateBridge(amount: bigint) {
-    const { isConnected, address } = useAccount()
+    const { address } = useAccount()
     const { sourceToken, targetToken } = useTokenConfig()
 
     const hooks = {
@@ -30,11 +30,25 @@ function useSimulateBridge(amount: bigint) {
     const targetLzId = targetToken?.lzId ?? 0
     const userAddress = address ?? "0x"
     const adapterParams = targetToken?.adapterParams ?? "0x"
-    const address32Bytes = address ? pad(address) : "0x"
+    const address32Bytes = address ? pad(address) : pad("0x0")
     const fee = hooks.fee.data ?? 0n
     const allowance = hooks.allowance.data ?? 0n
     const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
     const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
+
+    const enabled = targetToken !== undefined
+        && hooks.fee.isSuccess
+        && hooks.allowance.isSuccess
+        && hooks.sourceTokenBalance.isSuccess
+        && hooks.sourceNativeBalance.isSuccess
+        && !hooks.fee.isFetching
+        && !hooks.allowance.isRefetching
+        && !hooks.sourceTokenBalance.isRefetching
+        && !hooks.sourceNativeBalance.isRefetching
+        && amount > 0
+        && amount <= allowance
+        && amount <= sourceTokenBalance
+        && sourceNativeBalance >= fee
 
     return useSimulateContract({
         abi: OftV1Abi,
@@ -48,27 +62,14 @@ function useSimulateBridge(amount: bigint) {
         }],
         value: fee,
         account: address,
-        scopeKey: address,
-        query: {
-            enabled: isConnected
-                && sourceToken != undefined
-                && targetToken != undefined
-                && hooks.fee.isSuccess
-                && hooks.allowance.isSuccess
-                && hooks.sourceTokenBalance.isSuccess
-                && hooks.sourceNativeBalance.isSuccess
-                && amount > 0
-                && amount <= allowance
-                && amount <= sourceTokenBalance
-                && sourceNativeBalance >= fee,
-        },
+        query: { enabled },
     })
 }
 
-export function BridgeButtonV1({ amount, setHash, onSuccess }: {
+export function BridgeButtonV1({ amount, setHash, reset }: {
     amount: bigint
     setHash: (hash: `0x${string}` | undefined) => void
-    onSuccess: () => void
+    reset: () => void
 }) {
     const { isConnected } = useAccount()
     const { sourceToken } = useTokenConfig()
@@ -84,6 +85,7 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
 
     const fee = hooks.fee.data ?? 0n
     const allowance = hooks.allowance.data ?? 0n
+    const zeroAmount = amount === 0n
     const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
     const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
     const insufficientTokenBalance = amount > sourceTokenBalance
@@ -101,7 +103,6 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
         && hooks.allowance.isSuccess
         && hooks.sourceTokenBalance.isSuccess
         && hooks.sourceNativeBalance.isSuccess
-        && amount > 0
 
     const loading = isLoading || isPending || isConfirming
     const disabled = !loaded || loading || !Boolean(data?.request)
@@ -110,6 +111,14 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
         return (
             <Button type="button" variant="secondary" className="w-full lg:w-48" disabled>
                 <Spinner loading={loading} /> <span>Bridge</span>
+            </Button>
+        )
+    }
+
+    if (zeroAmount) {
+        return (
+            <Button type="button" variant="secondary" className="w-full lg:w-48" disabled>
+                Bridge
             </Button>
         )
     }
@@ -140,7 +149,13 @@ export function BridgeButtonV1({ amount, setHash, onSuccess }: {
             variant="secondary"
             className="w-full lg:w-48"
             disabled={disabled}
-            onClick={() => writeContract(data!.request, { onSuccess })}
+            onClick={() => writeContract(data!.request, {
+                onSuccess: () => {
+                    reset()
+                    hooks.sourceNativeBalance.refetch()
+                    hooks.sourceTokenBalance.refetch()
+                }
+            })}
         >
             <Spinner loading={loading} /> <span>Bridge</span>
         </Button>

@@ -12,10 +12,7 @@ export function useTargetTokenBalance() {
 
     const userAddress = address ?? "0x"
 
-    const { data: blockNumber } = useBlockNumber({
-        chainId: targetTokenChainId,
-        watch: true,
-    })
+    const enabled = isConnected && address !== undefined
 
     const hook = useReadContracts({
         allowFailure: false,
@@ -41,13 +38,18 @@ export function useTargetTokenBalance() {
             },
         ],
         query: {
-            enabled: isConnected && targetToken !== undefined,
+            enabled,
             select: (data) => ({
                 symbol: data[0],
                 decimals: data[1],
                 value: data[2],
             })
         },
+    })
+
+    const { data: blockNumber } = useBlockNumber({
+        chainId: targetTokenChainId,
+        watch: true,
     })
 
     useEffect(() => { hook.refetch() }, [blockNumber])

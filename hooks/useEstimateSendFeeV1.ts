@@ -12,7 +12,12 @@ export function useEstimateSendFeeV1(amount: bigint) {
 
     const targetLzId = targetToken?.lzId ?? 0
     const adapterParams = targetToken?.adapterParams ?? "0x"
-    const address32Bytes = address ? pad(address) : "0x"
+    const address32Bytes = address ? pad(address) : pad("0x0")
+
+    const enabled = isConnected
+        && address !== undefined
+        && targetToken !== undefined
+        && amount > 0
 
     return useReadContract({
         abi: OftV1Abi,
@@ -20,13 +25,6 @@ export function useEstimateSendFeeV1(amount: bigint) {
         chainId: sourceTokenChainId,
         functionName: "estimateSendFee",
         args: [targetLzId, address32Bytes, amount, false, adapterParams],
-        scopeKey: address,
-        query: {
-            enabled: isConnected
-                && sourceToken != undefined
-                && targetToken != undefined
-                && amount > 0,
-            select: (data) => data[0], // estimateSendFee() returns an array
-        },
+        query: { enabled, select: (data) => data[0] }, // data[0] = native fee, data[1] = lz token fee
     })
 }

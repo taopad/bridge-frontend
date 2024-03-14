@@ -12,7 +12,12 @@ export function useEstimateSendFeeV2(amount: bigint) {
 
     const targetLzId = targetToken?.lzId ?? 0
     const adapterParams = targetToken?.adapterParams ?? "0x"
-    const address32Bytes = address ? pad(address) : "0x"
+    const address32Bytes = address ? pad(address) : pad("0x0")
+
+    const enabled = isConnected
+        && address !== undefined
+        && targetToken !== undefined
+        && amount > 0
 
     return useReadContract({
         abi: OftV2Abi,
@@ -28,13 +33,6 @@ export function useEstimateSendFeeV2(amount: bigint) {
             composeMsg: "0x",
             oftCmd: "0x",
         }, false],
-        scopeKey: address,
-        query: {
-            enabled: isConnected
-                && sourceToken != undefined
-                && targetToken != undefined
-                && amount > 0,
-            select: (data) => data.nativeFee,
-        },
+        query: { enabled, select: (data) => data.nativeFee },
     })
 }
