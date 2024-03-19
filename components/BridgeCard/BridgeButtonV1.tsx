@@ -1,12 +1,10 @@
 import { pad } from "viem"
 import { useEffect } from "react"
 import { useAccount, useSimulateContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
-import { useAllowance } from "@/hooks/useAllowance"
 import { useTokenConfig } from "@/hooks/useTokenConfig"
 import { useEstimateSendFeeV1 } from "@/hooks/useEstimateSendFeeV1"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { useSourceNativeBalance } from "@/hooks/useSourceNativeBalance"
-import { ApproveButton } from "./ApproveButton"
 import { Spinner } from "@/components/Spinner"
 import { Button } from "@/components/ui/button"
 import OftV1Abi from "@/config/abi/OftV1"
@@ -19,7 +17,6 @@ function useSimulateBridge(amount: bigint) {
 
     const hooks = {
         fee: useEstimateSendFeeV1(amount),
-        allowance: useAllowance(),
         sourceTokenBalance: useSourceTokenBalance(),
         sourceNativeBalance: useSourceNativeBalance(),
     }
@@ -32,18 +29,14 @@ function useSimulateBridge(amount: bigint) {
     const adapterParams = targetToken?.adapterParams ?? "0x"
     const address32Bytes = address ? pad(address) : pad("0x0")
     const fee = hooks.fee.data ?? 0n
-    const allowance = hooks.allowance.data ?? 0n
+    const allowance = hooks.sourceTokenBalance.data?.allowance ?? 0n
     const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
     const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
 
     const enabled = targetToken !== undefined
         && hooks.fee.isSuccess
-        && hooks.allowance.isSuccess
         && hooks.sourceTokenBalance.isSuccess
         && hooks.sourceNativeBalance.isSuccess
-        && !hooks.allowance.isRefetching
-        && !hooks.sourceTokenBalance.isRefetching
-        && !hooks.sourceNativeBalance.isRefetching
         && amount > 0
         && amount <= allowance
         && amount <= sourceTokenBalance
@@ -70,12 +63,11 @@ export function BridgeButtonV1({ amount, addHash, onSuccess }: {
     addHash: (hash: `0x${string}` | undefined) => void
     onSuccess: () => void
 }) {
-    const { isConnected } = useAccount()
     const { sourceToken } = useTokenConfig()
+    const { isConnected, chain } = useAccount()
 
     const hooks = {
         fee: useEstimateSendFeeV1(amount),
-        allowance: useAllowance(),
         sourceTokenBalance: useSourceTokenBalance(),
         sourceNativeBalance: useSourceNativeBalance(),
     }
@@ -83,8 +75,8 @@ export function BridgeButtonV1({ amount, addHash, onSuccess }: {
     const chainId = sourceToken?.chain.id
 
     const fee = hooks.fee.data ?? 0n
-    const allowance = hooks.allowance.data ?? 0n
     const zeroAmount = amount === 0n
+    const allowance = hooks.sourceTokenBalance.data?.allowance ?? 0n
     const sourceTokenBalance = hooks.sourceTokenBalance.data?.value ?? 0n
     const sourceNativeBalance = hooks.sourceNativeBalance.data?.value ?? 0n
     const insufficientTokenBalance = amount > sourceTokenBalance
@@ -92,24 +84,30 @@ export function BridgeButtonV1({ amount, addHash, onSuccess }: {
     const insufficientAllowance = amount > allowance
 
     const { data, isLoading } = useSimulateBridge(amount)
-    const { data: hash, isPending, writeContract, reset: resetWriteData } = useWriteContract()
+    const { data: hash, isPending, writeContract, reset } = useWriteContract()
     const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash, chainId, confirmations: 1 })
 
-    useEffect(() => { resetWriteData() }, [resetWriteData, chainId])
-
-    const loaded = isConnected
-        && hooks.fee.isSuccess
-        && hooks.allowance.isSuccess
-        && hooks.sourceTokenBalance.isSuccess
-        && hooks.sourceNativeBalance.isSuccess
+    useEffect(() => { reset() }, [reset, chainId])
 
     const loading = isLoading || isPending || isConfirming
-    const disabled = !loaded || loading || !Boolean(data?.request)
 
-    if (!loaded) {
+    const disabled = !isConnected
+        || chain === undefined
+        || chain.id !== chainId
+        || !hooks.fee.isSuccess
+        || !hooks.sourceTokenBalance.isSuccess
+        || !hooks.sourceNativeBalance.isSuccess
+        || zeroAmount
+        || insufficientAllowance
+        || insufficientNativeBalance
+        || insufficientTokenBalance
+        || loading
+        || !Boolean(data?.request)
+
+    if (loading) {
         return (
             <Button type="button" variant="secondary" className="flex gap-2 w-full lg:w-48" disabled>
-                <Spinner loading={loading} /> Bridge
+                <Spinner /> Bridge
             </Button>
         )
     }
@@ -139,7 +137,11 @@ export function BridgeButtonV1({ amount, addHash, onSuccess }: {
     }
 
     if (insufficientAllowance) {
-        return <ApproveButton amount={amount} />
+        return (
+            <Button type="button" variant="secondary" className="w-full lg:w-48" disabled>
+                Ins. allowance
+            </Button>
+        )
     }
 
     return (
@@ -152,9 +154,6 @@ export function BridgeButtonV1({ amount, addHash, onSuccess }: {
                 onSuccess: (hash) => {
                     onSuccess()
                     addHash(hash)
-                    hooks.allowance.refetch()
-                    hooks.sourceTokenBalance.refetch()
-                    hooks.sourceNativeBalance.refetch()
                 }
             })}
         >

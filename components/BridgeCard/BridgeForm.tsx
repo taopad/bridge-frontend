@@ -3,18 +3,19 @@
 import Link from "next/link"
 
 import { useState, useCallback } from "react"
+import { RocketIcon } from "@radix-ui/react-icons"
 import { useBigintInput } from "@/hooks/useBigintInput"
 import { useSourceTokenBalance } from "@/hooks/useSourceTokenBalance"
 import { Input } from "@/components/ui/input"
 import { MaxButton } from "./MaxButton"
+import { ApproveButton } from "./ApproveButton"
 import { BridgeButtonV1 } from "./BridgeButtonV1"
 import { BridgeButtonV2 } from "./BridgeButtonV2"
 import { SourceNativeFeeV1 } from "./SourceNativeFeeV1"
 import { SourceNativeFeeV2 } from "./SourceNativeFeeV2"
-import { SourceNativeBalance } from "./SourceNativeBalance"
-import { RocketIcon } from "@radix-ui/react-icons"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { SourceNativeSymbol } from "./SourceNativeSymbol"
+import { SourceNativeBalance } from "./SourceNativeBalance"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 type LzVersion = "v1" | "v2"
 
@@ -49,14 +50,13 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                         <MaxButton setAmount={amount.setValue} />
                     </div>
                 </div>
-                <div>
-                    <BridgeButton
-                        version={version}
-                        amount={amount.value}
-                        addHash={addHash}
-                        onSuccess={amount.reset}
-                    />
-                </div>
+                <ApproveButton amount={amount.value} />
+                <BridgeButton
+                    version={version}
+                    amount={amount.value}
+                    addHash={addHash}
+                    onSuccess={amount.reset}
+                />
             </div>
             <div className="flex flex-col gap-4 justify-between lg:flex-row">
                 <div>

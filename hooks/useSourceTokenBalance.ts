@@ -1,5 +1,6 @@
 import { erc20Abi } from "viem"
-import { useAccount, useReadContracts } from "wagmi"
+import { useEffect } from "react"
+import { useAccount, useBlockNumber, useReadContracts } from "wagmi"
 import { useTokenConfig } from "./useTokenConfig"
 import OftSharedAbi from "@/config/abi/OftShared"
 
@@ -7,15 +8,15 @@ export function useSourceTokenBalance() {
     const { sourceToken } = useTokenConfig()
     const { isConnected, address } = useAccount()
 
-    const sourceOftAddress = sourceToken?.oft
     const sourceTokenAddress = sourceToken?.token
     const sourceTokenChainId = sourceToken?.chain.id
 
     const userAddress = address ?? "0x"
+    const sourceOftAddress = sourceToken?.oft ?? "0x"
 
     const enabled = isConnected && address !== undefined
 
-    return useReadContracts({
+    const hook = useReadContracts({
         allowFailure: false,
         contracts: [
             {
@@ -43,6 +44,13 @@ export function useSourceTokenBalance() {
                 functionName: "balanceOf",
                 args: [userAddress],
             },
+            {
+                abi: erc20Abi,
+                address: sourceTokenAddress,
+                chainId: sourceTokenChainId,
+                functionName: "allowance",
+                args: [userAddress, sourceOftAddress],
+            },
         ],
         query: {
             enabled,
@@ -51,7 +59,17 @@ export function useSourceTokenBalance() {
                 decimals: data[1],
                 sharedDecimals: data[2],
                 value: data[3],
+                allowance: data[4],
             })
         },
     })
+
+    const { data: blockNumber } = useBlockNumber({
+        chainId: sourceTokenChainId,
+        watch: true,
+    })
+
+    useEffect(() => { hook.refetch() }, [blockNumber])
+
+    return hook
 }
