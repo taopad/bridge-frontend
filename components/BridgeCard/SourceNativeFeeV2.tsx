@@ -21,7 +21,7 @@ export function SourceNativeFeeV2({ amount }: { amount: bigint }) {
 
     return (
         <span className={className} title={formatUnits(fee, decimals)}>
-            {formatAmount(fee, decimals)}
+            {formatAmount(fee, decimals, 6)}
         </span>
     )
 }

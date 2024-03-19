@@ -6,9 +6,9 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export function formatAmount(amount: bigint, decimals: number) {
+export function formatAmount(amount: bigint, decimals: number, maximumFractionDigits?: number) {
     return parseFloat(formatUnits(amount, decimals)).toLocaleString("en-US", {
-        maximumFractionDigits: 3,
+        maximumFractionDigits: maximumFractionDigits ?? 3,
         useGrouping: false,
     })
 }
