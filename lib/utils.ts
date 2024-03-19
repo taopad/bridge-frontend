@@ -12,3 +12,9 @@ export function formatAmount(amount: bigint, decimals: number) {
         useGrouping: false,
     })
 }
+
+export function convertToSharedDecimals(amount: bigint, decimals: number, sharedDecimals: number) {
+    const decimalConvertionRate = 10n ** BigInt(decimals - sharedDecimals)
+
+    return (amount / decimalConvertionRate) * decimalConvertionRate
+}
