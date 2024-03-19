@@ -44,14 +44,14 @@ const wtao: Record<number, TokenConfig> = {
         adapterParams: adapterParamsV1Arbitrum,
         logo: "arbitrum-arb-logo.svg",
     },
-    [base.id]: {
-        lzId: 184,
-        chain: base,
-        token: WTAO_BASE_ADDRESS,
-        oft: WTAO_BASE_ADDRESS,
-        adapterParams: adapterParamsV1,
-        logo: "base-logo.svg",
-    },
+    //    [base.id]: {
+    //        lzId: 184,
+    //        chain: base,
+    //        token: WTAO_BASE_ADDRESS,
+    //        oft: WTAO_BASE_ADDRESS,
+    //        adapterParams: adapterParamsV1,
+    //        logo: "base-logo.svg",
+    //    },
 }
 
 const tbank: Record<number, TokenConfig> = {
