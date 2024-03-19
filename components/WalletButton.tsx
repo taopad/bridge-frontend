@@ -13,7 +13,7 @@ export function WalletButton() {
 
     if (isConnecting || isReconnecting) {
         return (
-            <Button className="w-40 lg:w-48" disabled>
+            <Button className="flex gap-2 w-40 lg:w-48" disabled>
                 <Spinner /> Connecting
             </Button>
         )

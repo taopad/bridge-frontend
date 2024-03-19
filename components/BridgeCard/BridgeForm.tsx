@@ -59,8 +59,14 @@ export function BridgeForm({ version }: { version: LzVersion }) {
                 </div>
             </div>
             <div className="flex flex-col gap-4 justify-between lg:flex-row">
-                <span>Native token balance: <SourceNativeBalance /> <SourceNativeSymbol /></span>
-                <span>Bridge fee: <SourceNativeFee version={version} amount={amount.value} /> <SourceNativeSymbol /></span>
+                <div>
+                    Native token balance: <SourceNativeBalance /> <SourceNativeSymbol />
+                </div>
+                <div className="flex gap-2">
+                    <span>Bridge fee:</span>
+                    <SourceNativeFee version={version} amount={amount.value} />
+                    <SourceNativeSymbol />
+                </div>
             </div>
             {hashes.map(hash => (
                 <Alert key={hash}>

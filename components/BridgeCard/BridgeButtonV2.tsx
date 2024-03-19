@@ -39,7 +39,6 @@ function useSimulateBridge(amount: bigint) {
         && hooks.allowance.isSuccess
         && hooks.sourceTokenBalance.isSuccess
         && hooks.sourceNativeBalance.isSuccess
-        && !hooks.fee.isFetching
         && !hooks.allowance.isRefetching
         && !hooks.sourceTokenBalance.isRefetching
         && !hooks.sourceNativeBalance.isRefetching
@@ -111,7 +110,7 @@ export function BridgeButtonV2({ amount, addHash, onSuccess }: {
 
     if (!loaded) {
         return (
-            <Button type="button" variant="secondary" className="w-full lg:w-48" disabled>
+            <Button type="button" variant="secondary" className="flex gap-2 w-full lg:w-48" disabled>
                 <Spinner loading={loading} /> <span>Bridge</span>
             </Button>
         )
@@ -149,7 +148,7 @@ export function BridgeButtonV2({ amount, addHash, onSuccess }: {
         <Button
             type="button"
             variant="secondary"
-            className="w-full lg:w-48"
+            className="flex gap-2 w-full lg:w-48"
             disabled={disabled}
             onClick={() => writeContract(data!.request, {
                 onSuccess: (hash) => {
