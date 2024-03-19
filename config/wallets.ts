@@ -14,8 +14,8 @@ const appName = "Tao bridge"
 const projectId = "837b08b6b8d6605f4240190ca6624fa5"
 
 const rpcs = {
-    [mainnet.id]: "https://rpc.ankr.com/eth",
-    [arbitrum.id]: "https://rpc.ankr.com/arbitrum",
+    [mainnet.id]: "https://eth-mainnet.g.alchemy.com/v2/Hvky-afpKHoxm1AgXx7sLw_Sw8h7bGh0",
+    [arbitrum.id]: "https://arb-mainnet.g.alchemy.com/v2/i9AeLXoqu2gpJpClZRYnWdhOibz3i-h7",
     [base.id]: "https://rpc.ankr.com/base",
 }
 
