@@ -39,11 +39,11 @@ const connectors = connectorsForWallets(
 const wtao = createConfig({
     ssr: true,
     connectors,
-    chains: [mainnet, arbitrum],
+    chains: [mainnet, arbitrum, base],
     transports: {
         [mainnet.id]: fallback([http(rpcs[mainnet.id]), http()]),
         [arbitrum.id]: fallback([http(rpcs[arbitrum.id]), http()]),
-        // [base.id]: fallback([http(rpcs[base.id]), http()]),
+        [base.id]: fallback([http(rpcs[base.id]), http()]),
     },
     storage: createStorage({ key: "wagmi-wtao", storage: cookieStorage }),
 })
