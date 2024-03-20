@@ -10,7 +10,7 @@ import {
     rabbyWallet,
 } from "@rainbow-me/rainbowkit/wallets"
 
-const appName = "Tao bridge"
+const appName = "Taobridge"
 const projectId = "837b08b6b8d6605f4240190ca6624fa5"
 
 const rpcs = {
