@@ -13,12 +13,6 @@ import {
 const appName = "Taobridge"
 const projectId = "837b08b6b8d6605f4240190ca6624fa5"
 
-const rpcs = {
-    [mainnet.id]: "https://eth-mainnet.g.alchemy.com/v2/Hvky-afpKHoxm1AgXx7sLw_Sw8h7bGh0",
-    [arbitrum.id]: "https://arb-mainnet.g.alchemy.com/v2/i9AeLXoqu2gpJpClZRYnWdhOibz3i-h7",
-    [base.id]: "https://rpc.ankr.com/base",
-}
-
 const connectors = connectorsForWallets(
     [
         {
@@ -36,27 +30,38 @@ const connectors = connectorsForWallets(
     { appName, projectId }
 )
 
+const transports = {
+    [mainnet.id]: fallback([
+        http("https://eth-mainnet.g.alchemy.com/v2/Hvky-afpKHoxm1AgXx7sLw_Sw8h7bGh0"),
+        http("https://rpc.ankr.com/eth"),
+        http(),
+    ]),
+    [arbitrum.id]: fallback([
+        http("https://arb-mainnet.g.alchemy.com/v2/i9AeLXoqu2gpJpClZRYnWdhOibz3i-h7"),
+        http("https://rpc.ankr.com/arbitrum"),
+        http(),
+    ]),
+    [base.id]: fallback([
+        http("https://base-mainnet.g.alchemy.com/v2/XD74L4pjyzymiePLbPlPsRQ7pQoQWpVp"),
+        http("https://rpc.ankr.com/base"),
+        http(),
+    ]),
+}
+
 const wtao = createConfig({
     ssr: true,
     connectors,
-    chains: [mainnet, arbitrum, base],
-    transports: {
-        [mainnet.id]: fallback([http(rpcs[mainnet.id]), http()]),
-        [arbitrum.id]: fallback([http(rpcs[arbitrum.id]), http()]),
-        [base.id]: fallback([http(rpcs[base.id]), http()]),
-    },
+    transports,
     storage: createStorage({ key: "wagmi-wtao", storage: cookieStorage }),
+    chains: [mainnet, arbitrum, base],
 })
 
 const tbank = createConfig({
     ssr: true,
     connectors,
-    chains: [mainnet, arbitrum],
-    transports: {
-        [mainnet.id]: fallback([http(rpcs[mainnet.id]), http()]),
-        [arbitrum.id]: fallback([http(rpcs[arbitrum.id]), http()]),
-    },
+    transports,
     storage: createStorage({ key: "wagmi-tbank", storage: cookieStorage }),
+    chains: [mainnet, arbitrum],
 })
 
 export const configs = { wtao, tbank }
