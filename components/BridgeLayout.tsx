@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { headers } from "next/headers"
 import { Navbar } from "@/components/Navbar"
+import { Footer } from "@/components/Footer"
 import { WalletProvider } from "@/components/WalletProvider"
 import { TokenConfigProvider } from "@/components/TokenConfigProvider"
 import { buttonVariants } from "@/components/ui/button"
@@ -33,6 +34,7 @@ export function BridgeLayout({ token, children }: { token: TokenType, children: 
                         <div className="flex flex-col gap-4">
                             {children}
                         </div>
+                        <Footer />
                     </div>
                 </div>
             </TokenConfigProvider>
