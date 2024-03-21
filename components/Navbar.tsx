@@ -4,7 +4,7 @@ import { NavbarLogo } from "./NavbarLogo"
 
 export function Navbar() {
     return (
-        <div className="flex container mx-auto py-4 justify-between items-center">
+        <div className="flex container px-2 py-4 justify-between items-center">
             <Link href="/" className="block w-40 lg:w-48">
                 <NavbarLogo />
             </Link>
