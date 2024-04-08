@@ -8,6 +8,7 @@ import {
     walletConnectWallet,
     trustWallet,
     rabbyWallet,
+    okxWallet,
 } from "@rainbow-me/rainbowkit/wallets"
 
 const appName = "Taobridge"
@@ -19,6 +20,7 @@ const connectors = connectorsForWallets(
             groupName: 'Wallets',
             wallets: [
                 injectedWallet,
+                okxWallet,
                 rainbowWallet,
                 coinbaseWallet,
                 walletConnectWallet,
